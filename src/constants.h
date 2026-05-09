@@ -8,12 +8,15 @@
 #define MAP_W 50 //provisorio
 #define MAP_H 27 //provisorio
 #define TILE_SIZE 24
+#define PLAYER_SIZE 16
+#define ENEMY_SIZE 20
+#define ENEMY_AMOUNT 3 //provisorio
 
 
 // Enums
 enum PlayerState {
     PLAYER_IDLE, 
-    PLAYER_LETTER,
+    PLAYER_CLIMBING,
     PLYER_DEAD
 };
 
@@ -31,6 +34,11 @@ struct Player {
     Vector2 position;
     enum PlayerState state;
     int lifes;
+};
+
+struct Enemy {
+    Vector2 position;
+    int direction; //1 -> moving right, -1 -> moving left
 };
 
 #endif
