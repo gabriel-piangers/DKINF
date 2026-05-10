@@ -3,48 +3,18 @@
 #include <time.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <string.h>
 #include "constants.h"
+#include "player.h"
+#include "enemies.h"
+#include "map.h"
 
-//Game Constants
+// Define textures
 Texture2D FLOOR_TEXTURE;
 Texture2D STAIR_TEXTURE;
 Texture2D CHEST_TEXTURE;
 Texture2D PLAYER_TEXTURE;
 Texture2D ENEMY_TEXTURE;
-
-//Global Variables
-char map[MAP_H][MAP_W] = {
-        "                                 ",
-        "      D        F        D        ",
-        "      HZZZZZZZZZZZZZZZZZH        ",
-        "      H                 H        ",
-        "   D  S                 SD       ",
-        "  ZHZZZZZZZZZZZZZZZZZZZZZHZ      ",
-        "   H                     H       ",
-        "   S     D         D     S       ",
-        " ZZZZZZZZHZZZZZZZZZHZZZZZZZZ     ",
-        "         H         H             ",
-        "  D      S         SE      D     ",
-        "ZZHZZZZZZZZ       ZZZZZZZZZH     ",
-        "  H                        H     ",
-        "  S     D           D      S     ",
-        " ZZZZZZHZZZZZZZZZZZHZZZZZZZZ     ",
-        "       H           H             ",
-        "       S     D     S E           ",
-        " ZZZZZZZZZZZZHZZZZZZZZZZZZ       ",
-        "             H                   ",
-        "      D      S      D            ",
-        "     ZHZZZZZZZZZZZZZH            ",
-        "      H             H            ",
-        "D    ES             S     D      ",
-        "HZZZZZZZZZZZZZZZZZZZZZZZZZH      ",
-        "H                         H      ",
-        "S    P                    S      ",
-        "ZZZZZZZZZZZZZZZZZZZZZZZZZZZ      "
-    };
-
-struct Player player = {(Vector2) {0, 0}, PLAYER_IDLE, 1};
-struct Enemy enemies[ENEMY_AMOUNT]; //provisorio, cada mapa precisa ter exatamente ENEMY_AMOUNT inimigos (usar um vetor dinãmico no futuro)
 
 // Game functions
 void LoadResources() {
@@ -65,48 +35,26 @@ void UnloadResources() {
 
 void InitializeEntities() {
     int enemyIndex = 0;
+    Vector2 enemyPositions[ENEMY_AMOUNT];
     for (int y = 0; y<MAP_H; y++) {
-        for (int x = 0; map[y][x] != '\0'; x++) {
-            switch (map[y][x]) {
-                            case 'P': {
+        for (int x = 0; x<MAP_W; x++) {
+            switch (GetTileAt(x, y)) {
+            case 'P': {
                 int offset = TILE_SIZE - PLAYER_SIZE;
-                player.position = (Vector2) {x * TILE_SIZE + offset, y * TILE_SIZE + offset};
+                Vector2 pos = (Vector2) {x * TILE_SIZE + offset, y * TILE_SIZE + offset};
+                InitPlayer(pos);
                 break;
             }
             case 'E': {
                 int offset = TILE_SIZE - ENEMY_SIZE;
-                enemies[enemyIndex] = (struct Enemy) {(Vector2) {x * TILE_SIZE + offset, y * TILE_SIZE + offset}, 1};
+                enemyPositions[enemyIndex] = (Vector2) {x * TILE_SIZE + offset, y * TILE_SIZE + offset};
                 enemyIndex++;
                 break;
             }
             }
         }
     }
-}
-
-void DrawMap() {
-    for (int y = 0; y<MAP_H; y++) {
-        for (int x = 0; map[y][x] != '\0'; x++) {
-            switch (map[y][x]) {
-            case 'Z': {
-                DrawTexture(FLOOR_TEXTURE, x * TILE_SIZE, y * TILE_SIZE, WHITE);
-                break;
-            }
-            case 'H':
-            case 'S': {
-                DrawTexture(STAIR_TEXTURE, x * TILE_SIZE, y * TILE_SIZE, WHITE);
-                break;
-            }
-            case 'F': {
-                DrawTexture(CHEST_TEXTURE, x * TILE_SIZE, y * TILE_SIZE, WHITE);
-                break;
-            }
-            default: {
-                break;
-            }
-            }
-        }
-    }
+    InitEnemies(enemyPositions);
 }
 
 void DrawHUD(int level, float timer) {
@@ -114,23 +62,11 @@ void DrawHUD(int level, float timer) {
     DrawText(TextFormat("Time: %.2f", timer), 100, 20, 16, RED);
 }
 
-void DrawPlayer() {
-    DrawTexture(PLAYER_TEXTURE, player.position.x, player.position.y, WHITE);
-}
-
-void DrawEnemies() {
-    for (int i=0; i<ENEMY_AMOUNT; i++) {
-        struct Enemy currentEnemy = enemies[i];
-        DrawTexture(ENEMY_TEXTURE, currentEnemy.position.x, currentEnemy.position.y, WHITE);
-    }
-}
-
 int main() {
     SetTargetFPS(FPS);
     InitWindow(SCREEN_W, SCREEN_H, "DKINF");
 
     LoadResources();
-
 
     //Variables
     int currentLevel = 0;
@@ -141,7 +77,16 @@ int main() {
     while(!WindowShouldClose()) {
         // Update Logic
         timer += GetFrameTime();
-        player.position.x += 1; // Apenas teste
+        UpdatePlayer();
+        UpdateEnemies();
+
+        if (CheckEnemyCollision(GetPlayerRect())) {
+            printf("GAME OVER"); //TODO
+        }
+
+        if(PlayerReachedGoal()) {
+            printf("LEVEL %d FINISHED IN %.2f SECONDS", currentLevel, timer); // TODO
+        }
 
         // Drawing Logic
         BeginDrawing();
