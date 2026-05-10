@@ -63,8 +63,28 @@ void UnloadResources() {
     UnloadTexture(ENEMY_TEXTURE);
 }
 
-void DrawMap() {
+void InitializeEntities() {
     int enemyIndex = 0;
+    for (int y = 0; y<MAP_H; y++) {
+        for (int x = 0; map[y][x] != '\0'; x++) {
+            switch (map[y][x]) {
+                            case 'P': {
+                int offset = TILE_SIZE - PLAYER_SIZE;
+                player.position = (Vector2) {x * TILE_SIZE + offset, y * TILE_SIZE + offset};
+                break;
+            }
+            case 'E': {
+                int offset = TILE_SIZE - ENEMY_SIZE;
+                enemies[enemyIndex] = (struct Enemy) {(Vector2) {x * TILE_SIZE + offset, y * TILE_SIZE + offset}, 1};
+                enemyIndex++;
+                break;
+            }
+            }
+        }
+    }
+}
+
+void DrawMap() {
     for (int y = 0; y<MAP_H; y++) {
         for (int x = 0; map[y][x] != '\0'; x++) {
             switch (map[y][x]) {
@@ -79,17 +99,6 @@ void DrawMap() {
             }
             case 'F': {
                 DrawTexture(CHEST_TEXTURE, x * TILE_SIZE, y * TILE_SIZE, WHITE);
-                break;
-            }
-            case 'P': {
-                int offset = TILE_SIZE - PLAYER_SIZE;
-                player.position = (Vector2) {x * TILE_SIZE + offset, y * TILE_SIZE + offset};
-                break;
-            }
-            case 'E': {
-                int offset = TILE_SIZE - ENEMY_SIZE;
-                enemies[enemyIndex] = (struct Enemy) {(Vector2) {x * TILE_SIZE + offset, y * TILE_SIZE + offset}, 1};
-                enemyIndex++;
                 break;
             }
             default: {
@@ -119,16 +128,20 @@ void DrawEnemies() {
 int main() {
     SetTargetFPS(FPS);
     InitWindow(SCREEN_W, SCREEN_H, "DKINF");
-    
+
     LoadResources();
+
 
     //Variables
     int currentLevel = 0;
     float timer = 0.0f;
 
+    InitializeEntities();
+
     while(!WindowShouldClose()) {
         // Update Logic
         timer += GetFrameTime();
+        player.position.x += 1; // Apenas teste
 
         // Drawing Logic
         BeginDrawing();
