@@ -85,11 +85,11 @@ int main() {
         UpdateEnemies();
 
         if (CheckEnemyCollision(GetPlayerRect())) {
-            printf("GAME OVER"); //TODO
+            printf("GAME OVER\n"); //TODO
         }
 
         if(PlayerReachedGoal()) {
-            printf("LEVEL %d FINISHED IN %.2f SECONDS", currentLevel, timer); // TODO
+            printf("LEVEL %d FINISHED IN %.2f SECONDS\n", currentLevel, timer); // TODO
         }
 
         // Drawing Logic

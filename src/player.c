@@ -12,25 +12,25 @@ void InitPlayer(Vector2 pos) {
     player = (struct Player) {pos, PLAYER_IDLE, PLAYER_RIGHT_TEXTURE, 1};
 }
 
-bool PlayerCanMoveTo(Vector2 pos) { 
+bool CheckPlayerCollisionWithTile(Vector2 pos, char tile) {
     Rectangle newPlayerRect = {pos.x, pos.y, PLAYER_SIZE, PLAYER_SIZE};
     int pCoordX = (player.position.x + PLAYER_SIZE/2)/TILE_SIZE;
     int pCoordY = (player.position.y + PLAYER_SIZE/2)/TILE_SIZE;
     for (int x=-1; x<=1; x++) { 
         for (int y=-1; y<=1; y++) {
             int tCoordX = pCoordX+x, tCoordY = pCoordY+y;
-            if (GetTileAt(tCoordX, tCoordY) == 'Z') { //se colidir com alguma plataforma
+            if (GetTileAt(tCoordX, tCoordY) == tile) {
                 Rectangle platformRect = {tCoordX * TILE_SIZE, tCoordY * TILE_SIZE, TILE_SIZE, TILE_SIZE};
-                if(CheckCollisionRecs(newPlayerRect, platformRect)) return false; 
+                if(CheckCollisionRecs(newPlayerRect, platformRect)) return true; 
             }
         }
     }    
-    return true;
+    return false;
 }
 
 bool ApplyGravity() {
     Vector2 pos = {player.position.x, player.position.y+GRAVITY};
-    if (player.state == PLAYER_CLIMBING || !PlayerCanMoveTo(pos)) return false;
+    if (player.state == PLAYER_CLIMBING || CheckPlayerCollisionWithTile(pos, 'Z')) return false;
 
     Rectangle newPlayerRect = {pos.x, pos.y, PLAYER_SIZE, PLAYER_SIZE};
     int pCoordX = (player.position.x + PLAYER_SIZE/2)/TILE_SIZE;
@@ -65,21 +65,21 @@ void UpdatePlayer() {
     if(player.state != PLAYER_DEAD) {
         if(IsKeyDown(KEY_RIGHT)) {
             Vector2 newPos =  {player.position.x + PLAYER_SPEED, player.position.y};
-            if (PlayerCanMoveTo(newPos)) {
+            if (!CheckPlayerCollisionWithTile(newPos, 'Z')) {
                 player.position = newPos;
                 player.texture = PLAYER_RIGHT_TEXTURE;
             }
         }
         if(IsKeyDown(KEY_LEFT)) {
             Vector2 newPos =  {player.position.x - PLAYER_SPEED, player.position.y};
-            if (PlayerCanMoveTo(newPos)) {
+            if (!CheckPlayerCollisionWithTile(newPos, 'Z')) {
                 player.position = newPos;
                 player.texture = PLAYER_LEFT_TEXTURE;
             }
         }
         if(IsKeyDown(KEY_UP)) {
             Vector2 newPos =  {player.position.x, player.position.y - PLAYER_SPEED};
-            if(PlayerCanMoveTo(newPos)) {
+            if(!CheckPlayerCollisionWithTile(newPos, 'Z')) {
                 if(GetTileAt(pCoordX, pCoordY) == 'S' || GetTileAt(pCoordX, pCoordY) == 'H' || GetTileAt(pCoordX, pCoordY) == 'D') {
                     player.state = PLAYER_CLIMBING;
                     player.position = newPos;
@@ -88,7 +88,7 @@ void UpdatePlayer() {
         }
         if(IsKeyDown(KEY_DOWN)) {
             Vector2 newPos = {player.position.x, player.position.y + PLAYER_SPEED};
-            if(PlayerCanMoveTo(newPos)) {
+            if(!CheckPlayerCollisionWithTile(newPos, 'Z')) {
                 if(GetTileAt(pCoordX, pCoordY) == 'S' || GetTileAt(pCoordX, pCoordY) == 'H' || GetTileAt(pCoordX, pCoordY) == 'D') {
                     player.state = PLAYER_CLIMBING;
                     player.position = newPos;
@@ -103,5 +103,5 @@ Rectangle GetPlayerRect() {
 }
 
 bool PlayerReachedGoal() {
-    return false; //TODO
+    return CheckPlayerCollisionWithTile(player.position, 'F');
 }
