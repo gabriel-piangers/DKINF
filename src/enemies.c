@@ -2,6 +2,8 @@
 #include "constants.h"
 #include "enemies.h"
 
+extern Texture2D ENEMY_TEXTURE;
+
 struct Enemy enemies[ENEMY_AMOUNT]; //provisorio, cada mapa precisa ter exatamente ENEMY_AMOUNT inimigos (usar um vetor dinãmico no futuro)
 
 void InitEnemies(Vector2 positions[]) {

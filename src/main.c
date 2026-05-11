@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
+#include <stdio.h>
 #include "constants.h"
 #include "player.h"
 #include "enemies.h"
@@ -13,7 +14,8 @@
 Texture2D FLOOR_TEXTURE;
 Texture2D STAIR_TEXTURE;
 Texture2D CHEST_TEXTURE;
-Texture2D PLAYER_TEXTURE;
+Texture2D PLAYER_RIGHT_TEXTURE;
+Texture2D PLAYER_LEFT_TEXTURE;
 Texture2D ENEMY_TEXTURE;
 
 // Game functions
@@ -21,7 +23,8 @@ void LoadResources() {
     FLOOR_TEXTURE = LoadTexture("assets/floor.png");
     STAIR_TEXTURE = LoadTexture("assets/stair.png");
     CHEST_TEXTURE = LoadTexture("assets/chest.png");
-    PLAYER_TEXTURE = LoadTexture("assets/player0.png");
+    PLAYER_RIGHT_TEXTURE = LoadTexture("assets/player_right.png");
+    PLAYER_LEFT_TEXTURE = LoadTexture("assets/player_left.png");
     ENEMY_TEXTURE = LoadTexture("assets/fire.png");
 }
 
@@ -29,7 +32,8 @@ void UnloadResources() {
     UnloadTexture(FLOOR_TEXTURE);
     UnloadTexture(STAIR_TEXTURE);
     UnloadTexture(CHEST_TEXTURE);
-    UnloadTexture(PLAYER_TEXTURE);
+    UnloadTexture(PLAYER_RIGHT_TEXTURE);
+    UnloadTexture(PLAYER_LEFT_TEXTURE);
     UnloadTexture(ENEMY_TEXTURE);
 }
 

@@ -4,12 +4,14 @@
 #define FPS 60
 #define SCREEN_W 900
 #define SCREEN_H 675
+#define GRAVITY 4
 
-extern Texture2D FLOOR_TEXTURE;
-extern Texture2D STAIR_TEXTURE;
-extern Texture2D CHEST_TEXTURE;
-extern Texture2D PLAYER_TEXTURE;
-extern Texture2D ENEMY_TEXTURE;
+// Key inputs
+#define KEY_RIGHT KEY_D
+#define KEY_LEFT KEY_A
+#define KEY_UP KEY_W
+#define KEY_DOWN KEY_S
+#define KEY_PAUSE KEY_TAB
 
 // Enums
 enum GameState {

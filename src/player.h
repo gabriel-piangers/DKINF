@@ -4,16 +4,18 @@
 #include <raylib.h>
 
 #define PLAYER_SIZE 16
+#define PLAYER_SPEED 3
 
 enum PlayerState {
     PLAYER_IDLE, 
     PLAYER_CLIMBING,
-    PLYER_DEAD
+    PLAYER_DEAD
 };
 
 struct Player {
     Vector2 position;
     enum PlayerState state;
+    Texture2D texture;
     int lifes;
 };
 
@@ -21,6 +23,6 @@ void InitPlayer(Vector2 pos);
 void DrawPlayer();
 void UpdatePlayer();
 Rectangle GetPlayerRect();
-bool PlyerReachedGoal();
+bool PlayerReachedGoal();
 
 #endif

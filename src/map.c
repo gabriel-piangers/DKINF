@@ -2,6 +2,10 @@
 #include "map.h"
 #include "constants.h"
 
+extern Texture2D FLOOR_TEXTURE;
+extern Texture2D STAIR_TEXTURE;
+extern Texture2D CHEST_TEXTURE;
+
 char map[MAP_H][MAP_W] = {
         "                                 ",
         "      D        F        D        ",
@@ -16,7 +20,7 @@ char map[MAP_H][MAP_W] = {
         "  D      S         SE      D     ",
         "ZZHZZZZZZZZ       ZZZZZZZZZH     ",
         "  H                        H     ",
-        "  S     D           D      S     ",
+        "  S    D           D       S     ",
         " ZZZZZZHZZZZZZZZZZZHZZZZZZZZ     ",
         "       H           H             ",
         "       S     D     S E           ",
