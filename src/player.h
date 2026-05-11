@@ -4,7 +4,8 @@
 #include <raylib.h>
 
 #define PLAYER_SIZE 16
-#define PLAYER_SPEED 3
+#define PLAYER_SPEED 2
+#define PLAYER_JUMP_VELOCITY 4.5
 
 enum PlayerState {
     PLAYER_IDLE, 
@@ -14,6 +15,7 @@ enum PlayerState {
 
 struct Player {
     Vector2 position;
+    Vector2 velocity;
     enum PlayerState state;
     Texture2D texture;
     int lifes;
