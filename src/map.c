@@ -64,3 +64,18 @@ void DrawMap() {
 char GetTileAt(int x, int y) {
     return map[y][x];
 }
+
+bool CheckCollisionWithTile(Rectangle rect, char tile) {
+    int coordX = (rect.x + rect.width/2)/TILE_SIZE; // coordenada x do centro do retangulo
+    int coordY = (rect.y + rect.height/2)/TILE_SIZE; // coordenada y do centro do retangulo
+    for (int x=-1; x<=1; x++) { 
+        for (int y=-1; y<=1; y++) {
+            int tCoordX = coordX+x, tCoordY = coordY+y;
+            if (GetTileAt(tCoordX, tCoordY) == tile) {
+                Rectangle platformRect = {tCoordX * TILE_SIZE, tCoordY * TILE_SIZE, TILE_SIZE, TILE_SIZE};
+                if(CheckCollisionRecs(rect, platformRect)) return true; 
+            }
+        }
+    }    
+    return false;
+}

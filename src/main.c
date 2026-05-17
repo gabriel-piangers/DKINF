@@ -98,8 +98,8 @@ int main() {
         
         DrawMap();
 
-        DrawPlayer();
         DrawEnemies();
+        DrawPlayer();
 
         DrawHUD(currentLevel, timer);
 

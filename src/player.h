@@ -25,7 +25,6 @@ void InitPlayer(Vector2 pos);
 void DrawPlayer();
 void UpdatePlayer();
 Rectangle GetPlayerRect();
-bool CheckPlayerCollisionWithTile(Vector2 pos, char tile);
 bool PlayerReachedGoal();
 
 #endif
