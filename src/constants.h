@@ -4,7 +4,8 @@
 #define FPS 60
 #define SCREEN_W 900
 #define SCREEN_H 675
-#define GRAVITY 0.2
+#define GRAVITY 0.4 // deve ser maior que AIR_RESISTANCE
+#define AIR_RESISTANCE 0.2
 
 // Key inputs
 #define KEY_RIGHT KEY_D

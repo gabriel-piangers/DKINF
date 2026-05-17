@@ -3,9 +3,9 @@
 
 #include <raylib.h>
 
-#define PLAYER_SIZE 16
-#define PLAYER_SPEED 2
-#define PLAYER_JUMP_VELOCITY 4.5
+#define PLAYER_SIZE 16 //Deve ser menor que TILE_SIZE
+#define PLAYER_SPEED 1.8
+#define PLAYER_JUMP_VELOCITY 7.5
 
 enum PlayerState {
     PLAYER_IDLE, 
