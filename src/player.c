@@ -6,12 +6,27 @@
 
 extern Texture2D PLAYER_RIGHT_TEXTURE;
 extern Texture2D PLAYER_LEFT_TEXTURE;
+extern Texture2D PLAYER_JUMP_R_TEXTURE;
+extern Texture2D PLAYER_JUMP_L_TEXTURE;
 
 struct Player player;
 
 void InitPlayer(Vector2 pos) {
     player = (struct Player) {pos, (Vector2) {0.0, 0.0}, PLAYER_IDLE, PLAYER_RIGHT_TEXTURE, PLAYER_DASH_COOLDOWN, 1};
 }
+
+bool isPlayerOnGround() {
+    //tile imediatamente abaixo do canto superior esquerdo do sprite do jogador
+    char lUnderTile = GetTileAt(player.position.x/TILE_SIZE, (player.position.y/TILE_SIZE)+1);
+    //tile imediatamente abaico do canto superior direito do sprite do jogador
+    char rUnderTile = GetTileAt((player.position.x + PLAYER_SIZE)/TILE_SIZE, (player.position.y/TILE_SIZE)+1);
+    return
+        player.state == PLAYER_CLIMBING || (
+            player.velocity.y <= 1 && player.velocity.y >= -1 && (
+                lUnderTile == 'Z' || lUnderTile == 'H' || rUnderTile == 'Z' || rUnderTile == 'H'
+            ));
+}
+
 
 void ApplyVelocity() {
     Vector2 newPos = {player.position.x + player.velocity.x, player.position.y + player.velocity.y};
@@ -62,9 +77,7 @@ void UpdatePlayer() {
     int pCoordY = (player.position.y + PLAYER_SIZE/2)/TILE_SIZE; // coordenada y do centro do sprite do jogador
 
     char playerTile = GetTileAt(pCoordX, pCoordY);
-    char underTile = GetTileAt(pCoordX, pCoordY+1);
-
-    // printf("Player state: %d\n", player.state);
+    bool playerOnGround = isPlayerOnGround();
 
     // player state handlers
     if(player.state == PLAYER_CLIMBING && playerTile != 'S' && playerTile != 'H' && playerTile != 'D') {
@@ -76,10 +89,11 @@ void UpdatePlayer() {
     }
     player.dashTimer += GetFrameTime();
 
-    //Gravity aceleration
+    //Gravity acceleration
     if(player.state != PLAYER_CLIMBING) player.velocity.y += GRAVITY;
+
     //Air resistence
-    float lateralResistance = player.state == PLAYER_DASHING ? AIR_RESISTANCE*2 : AIR_RESISTANCE;
+    float lateralResistance = player.state == PLAYER_DASHING ? AIR_RESISTANCE*2 : AIR_RESISTANCE; //Dobra a resistencia do ar enquanto faz o dash
     if(player.velocity.x > 0) {
         player.velocity.x += player.velocity.x > lateralResistance ? -lateralResistance : -player.velocity.x; 
     } else if (player.velocity.x < 0){
@@ -97,11 +111,9 @@ void UpdatePlayer() {
     if(player.state != PLAYER_DEAD) {
         if(IsKeyDown(KEY_RIGHT) && player.state != PLAYER_DASHING) {
            player.velocity.x = PLAYER_SPEED;
-           player.texture = PLAYER_RIGHT_TEXTURE;
         }
         if(IsKeyDown(KEY_LEFT) && player.state != PLAYER_DASHING) {
             player.velocity.x = -PLAYER_SPEED;    
-            player.texture = PLAYER_LEFT_TEXTURE;
         }
         if(IsKeyDown(KEY_UP)) {
             if(playerTile == 'S' || playerTile == 'H' || playerTile == 'D') {
@@ -116,7 +128,7 @@ void UpdatePlayer() {
             }
         }
         if(IsKeyPressed(KEY_JUMP)) {
-            if (underTile == 'Z' || underTile == 'H' || underTile == 'S') { //Jogador está no chão ou na escada
+            if (playerOnGround) { //Jogador está no chão ou na escada
                 player.velocity.y = -PLAYER_JUMP_VELOCITY;
                 if (player.state == PLAYER_CLIMBING) player.state = PLAYER_IDLE;
             }
@@ -126,6 +138,21 @@ void UpdatePlayer() {
             player.state = PLAYER_DASHING;
             player.dashTimer = 0;
         }
+    }
+
+    //Player texture handler
+    if(playerOnGround) {
+        //Jogador esta no chao ou na escada
+        if(player.velocity.x > 0) player.texture = PLAYER_RIGHT_TEXTURE;
+        else if(player.velocity.x < 0) player.texture = PLAYER_LEFT_TEXTURE;
+        else if(player.texture.id == PLAYER_JUMP_R_TEXTURE.id) player.texture = PLAYER_RIGHT_TEXTURE;
+        else if(player.texture.id == PLAYER_JUMP_L_TEXTURE.id) player.texture = PLAYER_LEFT_TEXTURE;
+    } else {
+        //Jogador esta no ar
+        if(player.velocity.x > 0) player.texture = PLAYER_JUMP_R_TEXTURE;
+        else if(player.velocity.x < 0) player.texture = PLAYER_JUMP_L_TEXTURE;
+        else if(player.texture.id == PLAYER_RIGHT_TEXTURE.id) player.texture = PLAYER_JUMP_R_TEXTURE;
+        else if(player.texture.id == PLAYER_LEFT_TEXTURE.id) player.texture = PLAYER_JUMP_L_TEXTURE; 
     }
 }
 
