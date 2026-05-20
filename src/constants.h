@@ -4,8 +4,8 @@
 #define FPS 60
 #define SCREEN_W 900
 #define SCREEN_H 675
-#define GRAVITY 0.4 // deve ser maior que AIR_RESISTANCE
-#define AIR_RESISTANCE 0.2
+#define GRAVITY 0.5 // deve ser maior que AIR_RESISTANCE
+#define AIR_RESISTANCE 0.25
 
 // Key inputs
 #define KEY_RIGHT KEY_D
@@ -14,6 +14,7 @@
 #define KEY_DOWN KEY_S
 #define KEY_PAUSE KEY_TAB
 #define KEY_JUMP KEY_SPACE
+#define KEY_DASH KEY_LEFT_SHIFT
 
 // Enums
 enum GameState {

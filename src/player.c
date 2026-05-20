@@ -10,7 +10,7 @@ extern Texture2D PLAYER_LEFT_TEXTURE;
 struct Player player;
 
 void InitPlayer(Vector2 pos) {
-    player = (struct Player) {pos, (Vector2) {0.0, 0.0}, PLAYER_IDLE, PLAYER_RIGHT_TEXTURE, 1};
+    player = (struct Player) {pos, (Vector2) {0.0, 0.0}, PLAYER_IDLE, PLAYER_RIGHT_TEXTURE, PLAYER_DASH_COOLDOWN, 1};
 }
 
 void ApplyVelocity() {
@@ -64,20 +64,26 @@ void UpdatePlayer() {
     char playerTile = GetTileAt(pCoordX, pCoordY);
     char underTile = GetTileAt(pCoordX, pCoordY+1);
 
-    printf("Player state: %d\n", player.state);
+    // printf("Player state: %d\n", player.state);
 
+    // player state handlers
     if(player.state == PLAYER_CLIMBING && playerTile != 'S' && playerTile != 'H' && playerTile != 'D') {
         player.state = PLAYER_IDLE;
     }
+    if(player.state == PLAYER_DASHING && player.dashTimer >= PLAYER_DASH_DURATION){
+         player.state = PLAYER_IDLE;
+         player.dashTimer = 0;
+    }
+    player.dashTimer += GetFrameTime();
 
     //Gravity aceleration
     if(player.state != PLAYER_CLIMBING) player.velocity.y += GRAVITY;
-
     //Air resistence
+    float lateralResistance = player.state == PLAYER_DASHING ? AIR_RESISTANCE*2 : AIR_RESISTANCE;
     if(player.velocity.x > 0) {
-        player.velocity.x += player.velocity.x > AIR_RESISTANCE ? -AIR_RESISTANCE : -player.velocity.x; 
+        player.velocity.x += player.velocity.x > lateralResistance ? -lateralResistance : -player.velocity.x; 
     } else if (player.velocity.x < 0){
-        player.velocity.x += player.velocity.x < -AIR_RESISTANCE ? AIR_RESISTANCE : -player.velocity.x; 
+        player.velocity.x += player.velocity.x < -lateralResistance ? lateralResistance : -player.velocity.x; 
     }
     if(player.velocity.y > 0) {
         player.velocity.y += player.velocity.y > AIR_RESISTANCE ? -AIR_RESISTANCE : -player.velocity.y; 
@@ -89,18 +95,18 @@ void UpdatePlayer() {
 
     //User input
     if(player.state != PLAYER_DEAD) {
-        if(IsKeyDown(KEY_RIGHT)) {
+        if(IsKeyDown(KEY_RIGHT) && player.state != PLAYER_DASHING) {
            player.velocity.x = PLAYER_SPEED;
            player.texture = PLAYER_RIGHT_TEXTURE;
         }
-        if(IsKeyDown(KEY_LEFT)) {
-            player.velocity.x = -(PLAYER_SPEED);    
+        if(IsKeyDown(KEY_LEFT) && player.state != PLAYER_DASHING) {
+            player.velocity.x = -PLAYER_SPEED;    
             player.texture = PLAYER_LEFT_TEXTURE;
         }
         if(IsKeyDown(KEY_UP)) {
             if(playerTile == 'S' || playerTile == 'H' || playerTile == 'D') {
                 player.state = PLAYER_CLIMBING;
-                player.velocity.y = -(PLAYER_SPEED);
+                player.velocity.y = -PLAYER_SPEED;
             }
         }
         if(IsKeyDown(KEY_DOWN)) {
@@ -111,9 +117,14 @@ void UpdatePlayer() {
         }
         if(IsKeyPressed(KEY_JUMP)) {
             if (underTile == 'Z' || underTile == 'H' || underTile == 'S') { //Jogador está no chão ou na escada
-                player.velocity.y = -(PLAYER_JUMP_VELOCITY);
+                player.velocity.y = -PLAYER_JUMP_VELOCITY;
                 if (player.state == PLAYER_CLIMBING) player.state = PLAYER_IDLE;
             }
+        }
+        if(IsKeyPressed(KEY_DASH) && player.dashTimer >= PLAYER_DASH_COOLDOWN) {
+            player.velocity.x += player.velocity.x >= 0 ? PLAYER_DASH_VELOCITY : -PLAYER_DASH_VELOCITY;
+            player.state = PLAYER_DASHING;
+            player.dashTimer = 0;
         }
     }
 }
