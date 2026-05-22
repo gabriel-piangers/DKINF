@@ -4,6 +4,7 @@
 #include <raylib.h>
 
 #define ENEMY_SIZE 20
+#define PLAYER_SPEED 1
 #define ENEMY_AMOUNT 3 //provisorio
 
 struct Enemy {
