@@ -9,5 +9,6 @@
 
 void DrawMap();
 char GetTileAt(int x, int y);
+bool CheckCollisionWithTile(Rectangle rect, char tile);
 
 #endif
