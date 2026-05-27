@@ -136,6 +136,7 @@ int main() {
             if (IsKeyPressed(KEY_1)) {
                 InitializeEntities();
                 timer = 0.0f;
+                currentLevel = 0;
                 currentGameState = GAME_LEVEL;
             } else if (IsKeyPressed(KEY_2)) {
                 currentGameState = GAME_MENU;
