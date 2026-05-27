@@ -30,15 +30,11 @@ void UpdateEnemies() {
         int tileAheadX  = (int)(front / TILE_SIZE);
         int tileFeetY   = (int)((enemies[i].position.y + ENEMY_SIZE - 1) / TILE_SIZE);
 
-        //verifica abaixo do próximo passo para ver se cairia
-        int tileBelowX  = (int)((nextPosition.x + ENEMY_SIZE / 2) / TILE_SIZE);
-        int tileBelowY  = tileFeetY + 1;
-
         char tileAhead = GetTileAt(tileAheadX, tileFeetY);
-        char tileBelow = GetTileAt(tileBelowX, tileBelowY);
+        char tileBelow = GetTileAt(tileAheadX, tileFeetY + 1);
 
-        bool hitWall = (tileAhead == 'Z');  // só parede bloqueia
-        bool falls = (tileBelow != 'Z' && tileBelow != 'H');  // só Z e H contam como chão válido
+        bool hitWall = (tileAhead == 'Z');
+        bool falls = (tileBelow != 'Z');
 
         if (hitWall || falls) {
             enemies[i].direction *= -1;
@@ -56,6 +52,17 @@ void DrawEnemies() {
     }
 }
 
-bool CheckEnemyCollision(Rectangle rect) {
+bool CheckEnemyCollision(Rectangle rectPlayer) {
+    for (int i=0; i<ENEMY_AMOUNT; i++) {
+        
+        if (enemies[i].isAlive){
+            Rectangle rectEnemy = {enemies[i].position.x, enemies[i].position.y, ENEMY_SIZE, ENEMY_SIZE};
+            
+            if (CheckCollisionRecs(rectPlayer, rectEnemy)) {
+                return true;
+            }
+        }
+    }
+    
     return false; //TODO
 }
