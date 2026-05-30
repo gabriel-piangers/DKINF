@@ -21,13 +21,13 @@
 #define KEY_DASH KEY_LEFT_SHIFT
 
 // Enums
-enum GameState {
+typedef enum {
     GAME_PAUSED,
     GAME_LEVEL,
     GAME_MENU,
     GAME_RANKING,
     GAME_OVER,
     GAME_WINNER
-};
+} GameState;
 
 #endif

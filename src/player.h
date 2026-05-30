@@ -10,21 +10,21 @@
 #define PLAYER_DASH_DURATION 0.2 //seconds !(AIR_RESISTANCE * 2 * FPS * PLAYER_DASH_DURATION deve ser igual a PLAYER_DASH_VELOCITY)!
 #define PLAYER_DASH_COOLDOWN 1 //seconds
 
-enum PlayerState {
+typedef enum {
     PLAYER_IDLE, 
     PLAYER_CLIMBING,
     PLAYER_DASHING,
     PLAYER_DEAD
-};
+} PlayerState;
 
-struct Player {
+typedef struct {
     Vector2 position;
     Vector2 velocity;
-    enum PlayerState state;
+    PlayerState state;
     Texture2D texture;
     float dashTimer;
     int lifes;
-};
+}  Player;
 
 void InitPlayer(Vector2 pos);
 void DrawPlayer();

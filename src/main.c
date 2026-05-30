@@ -82,7 +82,7 @@ int main() {
     int currentLevel = 0;
     float timer = 0.0f;
 
-    enum GameState currentGameState = GAME_MENU;
+    GameState currentGameState = GAME_MENU;
 
     InitializeEntities();
 
@@ -100,7 +100,7 @@ int main() {
                 InitializeEntities();
                 currentGameState = GAME_LEVEL;
             } else if (IsKeyPressed(KEY_2)) {
-             currentGameState = GAME_RANKING;
+                currentGameState = GAME_RANKING;
             } else if (IsKeyPressed(KEY_3)) {
                 break;
             }

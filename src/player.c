@@ -9,10 +9,10 @@ extern Texture2D PLAYER_LEFT_TEXTURE;
 extern Texture2D PLAYER_JUMP_R_TEXTURE;
 extern Texture2D PLAYER_JUMP_L_TEXTURE;
 
-struct Player player;
+Player player;
 
 void InitPlayer(Vector2 pos) {
-    player = (struct Player) {pos, (Vector2) {0.0, 0.0}, PLAYER_IDLE, PLAYER_RIGHT_TEXTURE, PLAYER_DASH_COOLDOWN, 1};
+    player = (Player) {pos, (Vector2) {0.0, 0.0}, PLAYER_IDLE, PLAYER_RIGHT_TEXTURE, PLAYER_DASH_COOLDOWN, 1};
 }
 
 bool isPlayerOnGround() {

@@ -7,11 +7,11 @@
 #define PLAYER_SPEED 1
 #define ENEMY_AMOUNT 3 //provisorio
 
-struct Enemy {
+typedef struct {
     Vector2 position;
     int direction; //1 -> moving right, -1 -> moving left
     bool isAlive;
-};
+} Enemy;
 
 void InitEnemies(Vector2 positions[ENEMY_AMOUNT]);
 void DrawEnemies();
