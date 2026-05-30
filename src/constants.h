@@ -6,6 +6,7 @@
 #define SCREEN_H 675
 #define GRAVITY 0.5 // deve ser maior que AIR_RESISTANCE
 #define AIR_RESISTANCE 0.25
+#define MAX_PLAYER_NAME 20
 
 // Key inputs
 #define KEY_1 KEY_ONE
@@ -19,7 +20,7 @@
 #define KEY_JUMP KEY_SPACE
 #define KEY_DASH KEY_LEFT_SHIFT
 
-// Enums
+// Enums & Structs
 typedef enum {
     GAME_PAUSED,
     GAME_LEVEL,
@@ -28,5 +29,10 @@ typedef enum {
     GAME_OVER,
     GAME_FINISHED
 } GameState;
+
+typedef struct {
+    char PlayerName[MAX_PLAYER_NAME];
+    float time;
+} RankScore;
 
 #endif

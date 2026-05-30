@@ -80,14 +80,16 @@ int main() {
     LoadResources();
 
     //Variables
-    int currentLevel = 0;
+    int currentLevel = 0, letterCount = 0, frameCount = 0;
     float timer = 0.0f;
-
+    char playerName[MAX_PLAYER_NAME] = "";
     GameState currentGameState = GAME_MENU;
 
     InitializeEntities();
 
     while(!WindowShouldClose()) {
+        frameCount++;
+
         switch (currentGameState) {
             case GAME_MENU: {
                 if (IsKeyPressed(KEY_1)) {
@@ -98,7 +100,7 @@ int main() {
                 } else if (IsKeyPressed(KEY_3)) {
                     UnloadResources();
                     CloseWindow();
-                    return 0; // Foi obrigado a usar, se não da erro 
+                    return 0; // Foi obrigado a usar, se não da problema 
                 }
 
                 BeginDrawing();
@@ -162,10 +164,32 @@ int main() {
                 break;
             }
             case GAME_FINISHED: {
-                
+                //User input
+                int key = GetKeyPressed();
+                if (key >= 32 && key <= 125 && letterCount < MAX_PLAYER_NAME) {
+                    playerName[letterCount] = (char) key;
+                    letterCount++;
+                }
+                if(IsKeyPressed(KEY_BACKSPACE) && letterCount > 0) {
+                    letterCount--;
+                    playerName[letterCount] = '\0';
+                }
+                if(IsKeyPressed(KEY_ENTER) && letterCount > 0) {
+                    RankScore newScore = {(char) {' '}, timer}; // não da pra passar a string diretamente :(
+                    strcpy(newScore.PlayerName, playerName);
+
+                    printf("Player: %s \nTime: %.2f \n", playerName, timer); //Salvar isso em ranking.bin
+
+                    currentGameState = GAME_RANKING;
+                }
+
                 BeginDrawing();
                 ClearBackground(BLACK);
+
                 DrawTitle("GAME FINISHED");
+
+                DrawInput(playerName, FONT_SIZE_BIG, letterCount, frameCount);
+
                 EndDrawing();
                 
                 break;

@@ -6,6 +6,9 @@
 
 #define LINE_SPACING 30
 #define TITLE_FONT_SIZE 48
+#define FONT_SIZE_BIG 36
+#define FONT_SIZE_MEDIUM 24
+#define FONT_SIZE_SMALL 18
 #define MARGIN 50
 
 typedef struct {
@@ -15,5 +18,6 @@ typedef struct {
 
 void DrawTitle(char title[]);
 void DrawMenu(MenuOption options[]);
+void DrawInput(char text[], int fontSize, int letterCount, int frameCount);
 
 #endif
