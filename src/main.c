@@ -9,6 +9,7 @@
 #include "player.h"
 #include "enemies.h"
 #include "map.h"
+#include "ui.h"
 
 // Define textures
 Texture2D FLOOR_TEXTURE;
@@ -87,66 +88,107 @@ int main() {
     InitializeEntities();
 
     while(!WindowShouldClose()) {
-        // Drawing Logic
-        BeginDrawing();
-        ClearBackground(BLACK);
+        switch (currentGameState) {
+            case GAME_MENU: {
+                if (IsKeyPressed(KEY_1)) {
+                    InitializeEntities();
+                    currentGameState = GAME_LEVEL;
+                } else if (IsKeyPressed(KEY_2)) {
+                    currentGameState = GAME_RANKING;
+                } else if (IsKeyPressed(KEY_3)) {
+                    UnloadResources();
+                    CloseWindow();
+                    return 0; // Foi obrigado a usar, se não da erro 
+                }
 
-        if (currentGameState == GAME_MENU) {
-        DrawText("1. Novo Jogo", SCREEN_W / 2, SCREEN_H / 2, 20, WHITE);
-        DrawText("2. Ranking", SCREEN_W / 2, SCREEN_H / 2 + LINE_SPACING, 20, WHITE);
-        DrawText("3. Sair", SCREEN_W / 2, SCREEN_H / 2 + 2 * LINE_SPACING, 20, WHITE);
+                BeginDrawing();
+                ClearBackground(BLACK);
+                DrawTitle("DKINF");
 
-            if (IsKeyPressed(KEY_1)) {
-                InitializeEntities();
-                currentGameState = GAME_LEVEL;
-            } else if (IsKeyPressed(KEY_2)) {
-                currentGameState = GAME_RANKING;
-            } else if (IsKeyPressed(KEY_3)) {
+                DrawText("1. Novo Jogo", SCREEN_W / 2, SCREEN_H / 2, 20, WHITE);
+                DrawText("2. Ranking", SCREEN_W / 2, SCREEN_H / 2 + LINE_SPACING, 20, WHITE);
+                DrawText("3. Sair", SCREEN_W / 2, SCREEN_H / 2 + 2 * LINE_SPACING, 20, WHITE);
+
+                EndDrawing();
+                
                 break;
             }
-
-        } else if(currentGameState == GAME_LEVEL) {
-            // Update Logic
-            timer += GetFrameTime();
-            UpdatePlayer();
-            UpdateEnemies();
-        
-            if (CheckEnemyCollision(GetPlayerRect())) {
-                currentGameState = GAME_OVER;
-                //printf("GAME OVER! FINAL TIME: %.2f SECONDS\n", timer); //
-            }
-
-            if(PlayerReachedGoal()) {
-                printf("LEVEL %d FINISHED IN %.2f SECONDS\n", currentLevel, timer); // TODO
-            }
+            case GAME_LEVEL: {
+                // Update Logic
+                timer += GetFrameTime();
+                UpdatePlayer();
+                UpdateEnemies();
             
-            DrawMap();
+                if (CheckEnemyCollision(GetPlayerRect())) {
+                    currentGameState = GAME_OVER;
+                    //printf("GAME OVER! FINAL TIME: %.2f SECONDS\n", timer); //
+                }
 
-            DrawEnemies();
-            DrawPlayer();
+                if(PlayerReachedGoal()) {
+                    printf("LEVEL %d FINISHED IN %.2f SECONDS\n", currentLevel, timer);
+                    currentGameState = GAME_FINISHED;
+                }
+                
+                BeginDrawing();
+                ClearBackground(BLACK);
+                DrawMap();
 
-            DrawHUD(currentLevel, timer);
+                DrawEnemies();
+                DrawPlayer();
 
-        } else if (currentGameState == GAME_OVER) {
-            DrawText("GAME OVER!", SCREEN_W / 2, SCREEN_H / 2, 32, RED);
+                DrawHUD(currentLevel, timer);
+                EndDrawing();
 
-            DrawText("1. Reiniciar", SCREEN_W / 2, SCREEN_H / 2 + 2 *LINE_SPACING, 20, WHITE);
-            DrawText("2. Menu", SCREEN_W / 2, SCREEN_H / 2 + 3 * LINE_SPACING, 20, WHITE);
-            
-            if (IsKeyPressed(KEY_1)) {
-                InitializeEntities();
-                timer = 0.0f;
-                currentLevel = 0;
-                currentGameState = GAME_LEVEL;
-            } else if (IsKeyPressed(KEY_2)) {
-                currentGameState = GAME_MENU;
+                break;
             }
+            case GAME_OVER: {
+                if (IsKeyPressed(KEY_1)) {
+                    InitializeEntities();
+                    timer = 0.0f;
+                    currentLevel = 0;
+                    currentGameState = GAME_LEVEL;
+                } else if (IsKeyPressed(KEY_2)) {
+                    currentGameState = GAME_MENU;
+                }
 
+                BeginDrawing();
+                ClearBackground(BLACK);
+                DrawTitle("GAME OVER");
+
+                DrawText("1. Reiniciar", SCREEN_W / 2, SCREEN_H / 2 + 2 *LINE_SPACING, 20, WHITE);
+                DrawText("2. Menu", SCREEN_W / 2, SCREEN_H / 2 + 3 * LINE_SPACING, 20, WHITE);
+                EndDrawing();
+
+                break;
+            }
+            case GAME_FINISHED: {
+                
+                BeginDrawing();
+                ClearBackground(BLACK);
+                DrawTitle("GAME FINISHED");
+                EndDrawing();
+                
+                break;
+            }
+            case GAME_PAUSED: {
+
+                BeginDrawing();
+                ClearBackground(BLACK);
+                DrawTitle("GAME PAUSED");
+                EndDrawing();
+            }
+            case GAME_RANKING: {
+
+                BeginDrawing();
+                ClearBackground(BLACK);
+                DrawTitle("RANKINGS");
+                EndDrawing();
+            }
         }
-        
-        EndDrawing();
     }
 
     UnloadResources();
     CloseWindow();
+
+    return 0;
 }

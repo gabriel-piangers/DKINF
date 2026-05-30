@@ -4,7 +4,6 @@
 #define FPS 60
 #define SCREEN_W 900
 #define SCREEN_H 675
-#define LINE_SPACING 30
 #define GRAVITY 0.5 // deve ser maior que AIR_RESISTANCE
 #define AIR_RESISTANCE 0.25
 
@@ -27,7 +26,7 @@ typedef enum {
     GAME_MENU,
     GAME_RANKING,
     GAME_OVER,
-    GAME_WINNER
+    GAME_FINISHED
 } GameState;
 
 #endif

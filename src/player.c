@@ -27,8 +27,23 @@ bool isPlayerOnGround() {
             ));
 }
 
-
 void ApplyVelocity() {
+    //Gravity acceleration
+    if(player.state != PLAYER_CLIMBING) player.velocity.y += GRAVITY;
+
+    //Air resistence
+    float lateralResistance = player.state == PLAYER_DASHING ? AIR_RESISTANCE*2 : AIR_RESISTANCE; //Dobra a resistencia do ar enquanto faz o dash
+    if(player.velocity.x > 0) {
+        player.velocity.x += player.velocity.x > lateralResistance ? -lateralResistance : -player.velocity.x; 
+    } else if (player.velocity.x < 0){
+        player.velocity.x += player.velocity.x < -lateralResistance ? lateralResistance : -player.velocity.x; 
+    }
+    if(player.velocity.y > 0) {
+        player.velocity.y += player.velocity.y > AIR_RESISTANCE ? -AIR_RESISTANCE : -player.velocity.y; 
+    } else if(player.velocity.y < 0){
+        player.velocity.y += player.velocity.y < -AIR_RESISTANCE ? AIR_RESISTANCE : -player.velocity.y; 
+    }
+
     Vector2 newPos = {player.position.x + player.velocity.x, player.position.y + player.velocity.y};
     if(player.velocity.x != 0){
         Rectangle newPlayerRect = {newPos.x, player.position.y, PLAYER_SIZE, PLAYER_SIZE};
@@ -68,8 +83,22 @@ void ApplyVelocity() {
     player.position = newPos;
 }
 
-void DrawPlayer() {
-    DrawTexture(player.texture, player.position.x, player.position.y, WHITE);
+void SetPlayerTexture() {
+    bool playerOnGround = isPlayerOnGround();
+
+    if(playerOnGround) {
+        //Jogador esta no chao ou na escada
+        if(player.velocity.x > 0) player.texture = PLAYER_RIGHT_TEXTURE;
+        else if(player.velocity.x < 0) player.texture = PLAYER_LEFT_TEXTURE;
+        else if(player.texture.id == PLAYER_JUMP_R_TEXTURE.id) player.texture = PLAYER_RIGHT_TEXTURE;
+        else if(player.texture.id == PLAYER_JUMP_L_TEXTURE.id) player.texture = PLAYER_LEFT_TEXTURE;
+    } else {
+        //Jogador esta no ar
+        if(player.velocity.x > 0) player.texture = PLAYER_JUMP_R_TEXTURE;
+        else if(player.velocity.x < 0) player.texture = PLAYER_JUMP_L_TEXTURE;
+        else if(player.texture.id == PLAYER_RIGHT_TEXTURE.id) player.texture = PLAYER_JUMP_R_TEXTURE;
+        else if(player.texture.id == PLAYER_LEFT_TEXTURE.id) player.texture = PLAYER_JUMP_L_TEXTURE; 
+    }
 }
 
 void UpdatePlayer() {
@@ -88,24 +117,6 @@ void UpdatePlayer() {
          player.dashTimer = 0;
     }
     player.dashTimer += GetFrameTime();
-
-    //Gravity acceleration
-    if(player.state != PLAYER_CLIMBING) player.velocity.y += GRAVITY;
-
-    //Air resistence
-    float lateralResistance = player.state == PLAYER_DASHING ? AIR_RESISTANCE*2 : AIR_RESISTANCE; //Dobra a resistencia do ar enquanto faz o dash
-    if(player.velocity.x > 0) {
-        player.velocity.x += player.velocity.x > lateralResistance ? -lateralResistance : -player.velocity.x; 
-    } else if (player.velocity.x < 0){
-        player.velocity.x += player.velocity.x < -lateralResistance ? lateralResistance : -player.velocity.x; 
-    }
-    if(player.velocity.y > 0) {
-        player.velocity.y += player.velocity.y > AIR_RESISTANCE ? -AIR_RESISTANCE : -player.velocity.y; 
-    } else if(player.velocity.y < 0){
-        player.velocity.y += player.velocity.y < -AIR_RESISTANCE ? AIR_RESISTANCE : -player.velocity.y; 
-    }
-
-    ApplyVelocity();
 
     //User input
     if(player.state != PLAYER_DEAD) {
@@ -140,20 +151,9 @@ void UpdatePlayer() {
         }
     }
 
-    //Player texture handler
-    if(playerOnGround) {
-        //Jogador esta no chao ou na escada
-        if(player.velocity.x > 0) player.texture = PLAYER_RIGHT_TEXTURE;
-        else if(player.velocity.x < 0) player.texture = PLAYER_LEFT_TEXTURE;
-        else if(player.texture.id == PLAYER_JUMP_R_TEXTURE.id) player.texture = PLAYER_RIGHT_TEXTURE;
-        else if(player.texture.id == PLAYER_JUMP_L_TEXTURE.id) player.texture = PLAYER_LEFT_TEXTURE;
-    } else {
-        //Jogador esta no ar
-        if(player.velocity.x > 0) player.texture = PLAYER_JUMP_R_TEXTURE;
-        else if(player.velocity.x < 0) player.texture = PLAYER_JUMP_L_TEXTURE;
-        else if(player.texture.id == PLAYER_RIGHT_TEXTURE.id) player.texture = PLAYER_JUMP_R_TEXTURE;
-        else if(player.texture.id == PLAYER_LEFT_TEXTURE.id) player.texture = PLAYER_JUMP_L_TEXTURE; 
-    }
+    ApplyVelocity();
+
+    SetPlayerTexture();
 }
 
 Rectangle GetPlayerRect() {
@@ -162,4 +162,8 @@ Rectangle GetPlayerRect() {
 
 bool PlayerReachedGoal() {
     return CheckCollisionWithTile(GetPlayerRect(), 'F');
+}
+
+void DrawPlayer() {
+    DrawTexture(player.texture, player.position.x, player.position.y, WHITE);
 }
