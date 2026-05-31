@@ -9,9 +9,12 @@
 #define PLAYER_DASH_VELOCITY 6
 #define PLAYER_DASH_DURATION 0.2 //seconds !(AIR_RESISTANCE * 2 * FPS * PLAYER_DASH_DURATION deve ser igual a PLAYER_DASH_VELOCITY)!
 #define PLAYER_DASH_COOLDOWN 1 //seconds
+#define PLAYER_ANIMATION_DURATION 0.6 //seconds
+#define PLAYER_ANIMATION_FRAMES 4 //Number of frames 
 
 typedef enum {
     PLAYER_IDLE, 
+    PLAYER_RUNNNING,
     PLAYER_CLIMBING,
     PLAYER_DASHING,
     PLAYER_DEAD
@@ -22,6 +25,8 @@ typedef struct {
     Vector2 velocity;
     PlayerState state;
     Texture2D texture;
+    int framePos; //intervalo de [1, PLAYER_RUN_ANIMATION_FRAMES]
+    int direction; // 1 -> facing right, -1 facing left
     float dashTimer;
     int lifes;
 }  Player;

@@ -19,6 +19,8 @@ Texture2D PLAYER_RIGHT_TEXTURE;
 Texture2D PLAYER_LEFT_TEXTURE;
 Texture2D PLAYER_JUMP_R_TEXTURE;
 Texture2D PLAYER_JUMP_L_TEXTURE;
+Texture2D PLAYER_RUN_R_TEXTURE; // 1x4 sprite sheet
+Texture2D PLAYER_RUN_L_TEXTURE; // 1x4 sprite sheet
 Texture2D ENEMY_TEXTURE;
 
 // Game functions
@@ -30,6 +32,8 @@ void LoadResources() {
     PLAYER_LEFT_TEXTURE = LoadTexture("assets/player_left.png");
     PLAYER_JUMP_R_TEXTURE = LoadTexture("assets/player_jump_r.png");
     PLAYER_JUMP_L_TEXTURE = LoadTexture("assets/player_jump_l.png");
+    PLAYER_RUN_R_TEXTURE = LoadTexture("assets/player_run_r.png");
+    PLAYER_RUN_L_TEXTURE = LoadTexture("assets/player_run_l.png");
     ENEMY_TEXTURE = LoadTexture("assets/fire.png");
 }
 
@@ -41,6 +45,8 @@ void UnloadResources() {
     UnloadTexture(PLAYER_LEFT_TEXTURE);
     UnloadTexture(PLAYER_JUMP_R_TEXTURE);
     UnloadTexture(PLAYER_JUMP_L_TEXTURE);
+    UnloadTexture(PLAYER_RUN_R_TEXTURE);
+    UnloadTexture(PLAYER_RUN_L_TEXTURE);
     UnloadTexture(ENEMY_TEXTURE);
 }
 

@@ -8,17 +8,28 @@ extern Texture2D PLAYER_RIGHT_TEXTURE;
 extern Texture2D PLAYER_LEFT_TEXTURE;
 extern Texture2D PLAYER_JUMP_R_TEXTURE;
 extern Texture2D PLAYER_JUMP_L_TEXTURE;
+extern Texture2D PLAYER_RUN_R_TEXTURE;
+extern Texture2D PLAYER_RUN_L_TEXTURE;
 
 Player player;
+float animationTimer = 0; 
 
 void InitPlayer(Vector2 pos) {
-    player = (Player) {pos, (Vector2) {0.0, 0.0}, PLAYER_IDLE, PLAYER_RIGHT_TEXTURE, PLAYER_DASH_COOLDOWN, 1};
+    player = (Player) {
+        pos, //position
+        (Vector2) {0.0, 0.0}, //velocity
+        PLAYER_IDLE, //state
+        PLAYER_RIGHT_TEXTURE, //texture
+        1, //framePos
+        PLAYER_DASH_COOLDOWN, //dashTimer
+        1 //lifes
+    };
 }
 
 bool isPlayerOnGround() {
     //tile imediatamente abaixo do canto superior esquerdo do sprite do jogador
     char lUnderTile = GetTileAt(player.position.x/TILE_SIZE, (player.position.y/TILE_SIZE)+1);
-    //tile imediatamente abaico do canto superior direito do sprite do jogador
+    //tile imediatamente abaixo do canto superior direito do sprite do jogador
     char rUnderTile = GetTileAt((player.position.x + PLAYER_SIZE)/TILE_SIZE, (player.position.y/TILE_SIZE)+1);
     return
         player.state == PLAYER_CLIMBING || (
@@ -44,6 +55,7 @@ void ApplyVelocity() {
         player.velocity.y += player.velocity.y < -AIR_RESISTANCE ? AIR_RESISTANCE : -player.velocity.y; 
     }
 
+    //Aplica velocidade horizontal
     Vector2 newPos = {player.position.x + player.velocity.x, player.position.y + player.velocity.y};
     if(player.velocity.x != 0){
         Rectangle newPlayerRect = {newPos.x, player.position.y, PLAYER_SIZE, PLAYER_SIZE};
@@ -53,6 +65,7 @@ void ApplyVelocity() {
         }
     }
     
+    //Aplica velocidade vertical
     if(player.velocity.y != 0) {
         Rectangle newPlayerRect = {player.position.x, newPos.y, PLAYER_SIZE, PLAYER_SIZE};
         if (CheckCollisionWithTile(newPlayerRect, 'Z')) {
@@ -80,24 +93,30 @@ void ApplyVelocity() {
             }
         }
     }
+
     player.position = newPos;
 }
 
 void SetPlayerTexture() {
     bool playerOnGround = isPlayerOnGround();
 
+    if(player.velocity.x > 0) player.direction = 1;
+    else if(player.velocity.x < 0) player.direction = -1;
+
+
     if(playerOnGround) {
         //Jogador esta no chao ou na escada
-        if(player.velocity.x > 0) player.texture = PLAYER_RIGHT_TEXTURE;
-        else if(player.velocity.x < 0) player.texture = PLAYER_LEFT_TEXTURE;
-        else if(player.texture.id == PLAYER_JUMP_R_TEXTURE.id) player.texture = PLAYER_RIGHT_TEXTURE;
-        else if(player.texture.id == PLAYER_JUMP_L_TEXTURE.id) player.texture = PLAYER_LEFT_TEXTURE;
+        if(player.state == PLAYER_RUNNNING) {
+            if(player.direction == 1) player.texture = PLAYER_RUN_R_TEXTURE;
+            else player.texture = PLAYER_RUN_L_TEXTURE;
+        } else {
+            if(player.direction == 1) player.texture = PLAYER_RIGHT_TEXTURE;
+            else player.texture = PLAYER_LEFT_TEXTURE;
+        }
     } else {
         //Jogador esta no ar
-        if(player.velocity.x > 0) player.texture = PLAYER_JUMP_R_TEXTURE;
-        else if(player.velocity.x < 0) player.texture = PLAYER_JUMP_L_TEXTURE;
-        else if(player.texture.id == PLAYER_RIGHT_TEXTURE.id) player.texture = PLAYER_JUMP_R_TEXTURE;
-        else if(player.texture.id == PLAYER_LEFT_TEXTURE.id) player.texture = PLAYER_JUMP_L_TEXTURE; 
+        if(player.direction == 1) player.texture = PLAYER_JUMP_R_TEXTURE;
+        else player.texture = PLAYER_JUMP_L_TEXTURE; 
     }
 }
 
@@ -108,15 +127,40 @@ void UpdatePlayer() {
     char playerTile = GetTileAt(pCoordX, pCoordY);
     bool playerOnGround = isPlayerOnGround();
 
-    // player state handlers
-    if(player.state == PLAYER_CLIMBING && playerTile != 'S' && playerTile != 'H' && playerTile != 'D') {
-        player.state = PLAYER_IDLE;
-    }
-    if(player.state == PLAYER_DASHING && player.dashTimer >= PLAYER_DASH_DURATION){
-         player.state = PLAYER_IDLE;
-         player.dashTimer = 0;
-    }
+    //Timer updates
     player.dashTimer += GetFrameTime();
+    if (player.state == PLAYER_RUNNNING) {
+        animationTimer += GetFrameTime();
+        if (animationTimer > PLAYER_ANIMATION_DURATION/PLAYER_ANIMATION_FRAMES) {
+            animationTimer = 0.0;
+            player.framePos++;
+            if (player.framePos > PLAYER_ANIMATION_FRAMES) player.framePos = 1;
+        }
+    }
+        
+    // player state handlers
+    switch (player.state) {
+        case PLAYER_IDLE:
+            if (player.velocity.x != 0) 
+                player.state = PLAYER_RUNNNING;
+            break;
+        case PLAYER_RUNNNING:
+            if(player.velocity.x == 0) 
+                player.state = PLAYER_IDLE;
+            break;
+        case PLAYER_CLIMBING:
+            if(playerTile != 'S' && playerTile != 'H' && playerTile != 'D') 
+                player.state = PLAYER_IDLE;
+            break;
+        case PLAYER_DASHING:
+            if(player.dashTimer >= PLAYER_DASH_DURATION) {
+                player.state = PLAYER_IDLE;
+                player.dashTimer = 0;
+            }
+            break;
+        default:
+            break;
+    }
 
     //User input
     if(player.state != PLAYER_DEAD) {
@@ -165,5 +209,6 @@ bool PlayerReachedGoal() {
 }
 
 void DrawPlayer() {
-    DrawTexture(player.texture, player.position.x, player.position.y, WHITE);
+    Rectangle textureRec = {player.framePos * PLAYER_SIZE, 0.0, PLAYER_SIZE, PLAYER_SIZE};
+    DrawTextureRec(player.texture, textureRec, player.position, WHITE);
 }
