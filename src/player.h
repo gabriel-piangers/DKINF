@@ -25,7 +25,7 @@ typedef struct {
     Vector2 velocity;
     PlayerState state;
     Texture2D texture;
-    int framePos; //intervalo de [1, PLAYER_RUN_ANIMATION_FRAMES]
+    int framePos; //intervalo de [0, PLAYER_RUN_ANIMATION_FRAMES]
     int direction; // 1 -> facing right, -1 facing left
     float dashTimer;
     int lifes;

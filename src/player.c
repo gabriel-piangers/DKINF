@@ -4,12 +4,12 @@
 #include "constants.h"
 #include "map.h"
 
-extern Texture2D PLAYER_RIGHT_TEXTURE;
-extern Texture2D PLAYER_LEFT_TEXTURE;
 extern Texture2D PLAYER_JUMP_R_TEXTURE;
 extern Texture2D PLAYER_JUMP_L_TEXTURE;
 extern Texture2D PLAYER_RUN_R_TEXTURE;
 extern Texture2D PLAYER_RUN_L_TEXTURE;
+extern Texture2D PLAYER_TRAIL_R_TEXTURE;
+extern Texture2D PLAYER_TRAIL_L_TEXTURE;
 
 Player player;
 float animationTimer = 0; 
@@ -19,8 +19,8 @@ void InitPlayer(Vector2 pos) {
         pos, //position
         (Vector2) {0.0, 0.0}, //velocity
         PLAYER_IDLE, //state
-        PLAYER_RIGHT_TEXTURE, //texture
-        1, //framePos
+        PLAYER_RUN_R_TEXTURE, //texture
+        0, //framePos
         PLAYER_DASH_COOLDOWN, //dashTimer
         1 //lifes
     };
@@ -54,6 +54,9 @@ void ApplyVelocity() {
     } else if(player.velocity.y < 0){
         player.velocity.y += player.velocity.y < -AIR_RESISTANCE ? AIR_RESISTANCE : -player.velocity.y; 
     }
+
+    // Dash estático
+    if(player.state == PLAYER_DASHING) player.velocity.y = 0;
 
     //Aplica velocidade horizontal
     Vector2 newPos = {player.position.x + player.velocity.x, player.position.y + player.velocity.y};
@@ -106,13 +109,8 @@ void SetPlayerTexture() {
 
     if(playerOnGround) {
         //Jogador esta no chao ou na escada
-        if(player.state == PLAYER_RUNNNING) {
-            if(player.direction == 1) player.texture = PLAYER_RUN_R_TEXTURE;
-            else player.texture = PLAYER_RUN_L_TEXTURE;
-        } else {
-            if(player.direction == 1) player.texture = PLAYER_RIGHT_TEXTURE;
-            else player.texture = PLAYER_LEFT_TEXTURE;
-        }
+        if(player.direction == 1) player.texture = PLAYER_RUN_R_TEXTURE;
+        else player.texture = PLAYER_RUN_L_TEXTURE;
     } else {
         //Jogador esta no ar
         if(player.direction == 1) player.texture = PLAYER_JUMP_R_TEXTURE;
@@ -134,7 +132,7 @@ void UpdatePlayer() {
         if (animationTimer > PLAYER_ANIMATION_DURATION/PLAYER_ANIMATION_FRAMES) {
             animationTimer = 0.0;
             player.framePos++;
-            if (player.framePos > PLAYER_ANIMATION_FRAMES) player.framePos = 1;
+            if (player.framePos >= PLAYER_ANIMATION_FRAMES) player.framePos = 0;
         }
     }
         
@@ -145,8 +143,10 @@ void UpdatePlayer() {
                 player.state = PLAYER_RUNNNING;
             break;
         case PLAYER_RUNNNING:
-            if(player.velocity.x == 0) 
+            if(player.velocity.x == 0) {
                 player.state = PLAYER_IDLE;
+                player.framePos = 0;
+            }
             break;
         case PLAYER_CLIMBING:
             if(playerTile != 'S' && playerTile != 'H' && playerTile != 'D') 
@@ -173,12 +173,14 @@ void UpdatePlayer() {
         if(IsKeyDown(KEY_UP)) {
             if(playerTile == 'S' || playerTile == 'H' || playerTile == 'D') {
                 player.state = PLAYER_CLIMBING;
+                player.framePos = 0;
                 player.velocity.y = -PLAYER_SPEED;
             }
         }
         if(IsKeyDown(KEY_DOWN)) {
             if(playerTile == 'S' || playerTile == 'H' || playerTile == 'D') {
                 player.state = PLAYER_CLIMBING;
+                player.framePos = 0;
                 player.velocity.y = PLAYER_SPEED;
             }
         }
@@ -210,5 +212,18 @@ bool PlayerReachedGoal() {
 
 void DrawPlayer() {
     Rectangle textureRec = {player.framePos * PLAYER_SIZE, 0.0, PLAYER_SIZE, PLAYER_SIZE};
-    DrawTextureRec(player.texture, textureRec, player.position, WHITE);
+    Color playerColor = WHITE;
+    if(player.state != PLAYER_DASHING && player.dashTimer < PLAYER_DASH_COOLDOWN) playerColor = (Color) {255, 255, 255, 180};
+
+    DrawTextureRec(player.texture, textureRec, player.position, playerColor);
+
+    //Dash trail
+    Color trailColor = (Color) {255, 255, 255, 180};
+    if(player.state == PLAYER_DASHING) {
+        if(player.direction == 1) {
+            DrawTexture(PLAYER_TRAIL_R_TEXTURE, player.position.x - PLAYER_SIZE/2, player.position.y, trailColor );
+        } else {
+            DrawTexture(PLAYER_TRAIL_L_TEXTURE, player.position.x + PLAYER_SIZE, player.position.y, trailColor);
+        }
+    }
 }

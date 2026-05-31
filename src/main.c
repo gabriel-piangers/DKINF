@@ -15,12 +15,12 @@
 Texture2D FLOOR_TEXTURE;
 Texture2D STAIR_TEXTURE;
 Texture2D CHEST_TEXTURE;
-Texture2D PLAYER_RIGHT_TEXTURE;
-Texture2D PLAYER_LEFT_TEXTURE;
 Texture2D PLAYER_JUMP_R_TEXTURE;
 Texture2D PLAYER_JUMP_L_TEXTURE;
 Texture2D PLAYER_RUN_R_TEXTURE; // 1x4 sprite sheet
 Texture2D PLAYER_RUN_L_TEXTURE; // 1x4 sprite sheet
+Texture2D PLAYER_TRAIL_R_TEXTURE;
+Texture2D PLAYER_TRAIL_L_TEXTURE;
 Texture2D ENEMY_TEXTURE;
 
 // Game functions
@@ -28,12 +28,12 @@ void LoadResources() {
     FLOOR_TEXTURE = LoadTexture("assets/floor.png");
     STAIR_TEXTURE = LoadTexture("assets/stair.png");
     CHEST_TEXTURE = LoadTexture("assets/chest.png");
-    PLAYER_RIGHT_TEXTURE = LoadTexture("assets/player_right.png");
-    PLAYER_LEFT_TEXTURE = LoadTexture("assets/player_left.png");
     PLAYER_JUMP_R_TEXTURE = LoadTexture("assets/player_jump_r.png");
     PLAYER_JUMP_L_TEXTURE = LoadTexture("assets/player_jump_l.png");
     PLAYER_RUN_R_TEXTURE = LoadTexture("assets/player_run_r.png");
     PLAYER_RUN_L_TEXTURE = LoadTexture("assets/player_run_l.png");
+    PLAYER_TRAIL_R_TEXTURE = LoadTexture("assets/player_trail_r.png");
+    PLAYER_TRAIL_L_TEXTURE = LoadTexture("assets/player_trail_l.png");
     ENEMY_TEXTURE = LoadTexture("assets/fire.png");
 }
 
@@ -41,12 +41,12 @@ void UnloadResources() {
     UnloadTexture(FLOOR_TEXTURE);
     UnloadTexture(STAIR_TEXTURE);
     UnloadTexture(CHEST_TEXTURE);
-    UnloadTexture(PLAYER_RIGHT_TEXTURE);
-    UnloadTexture(PLAYER_LEFT_TEXTURE);
     UnloadTexture(PLAYER_JUMP_R_TEXTURE);
     UnloadTexture(PLAYER_JUMP_L_TEXTURE);
     UnloadTexture(PLAYER_RUN_R_TEXTURE);
     UnloadTexture(PLAYER_RUN_L_TEXTURE);
+    UnloadTexture(PLAYER_TRAIL_R_TEXTURE);
+    UnloadTexture(PLAYER_TRAIL_L_TEXTURE);
     UnloadTexture(ENEMY_TEXTURE);
 }
 
