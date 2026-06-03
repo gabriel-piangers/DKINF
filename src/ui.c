@@ -1,12 +1,26 @@
 #include "ui.h"
+#include <string.h>
 
 void DrawTitle(char title[]) {
     int textSize = MeasureText(title, TITLE_FONT_SIZE);
     DrawText(title, (SCREEN_W - textSize)/2, MARGIN, TITLE_FONT_SIZE, WHITE);
 }
 
-void DrawMenu(MenuOption options[]) {
-    return; //TODO
+void DrawMenu(MenuOption options[], int count) {
+    BeginDrawing();
+
+    int longerStringPos = 0;
+
+    for(int i = 0; i < count; i++) {
+        if(strlen(options[i].text) > strlen(options[longerStringPos].text)) {
+            longerStringPos = i;
+        } 
+    }
+
+    for (int j= 0; j < count; j++){
+        int textSize = MeasureText(options[longerStringPos].text, FONT_SIZE_MEDIUM);
+        DrawText(options[j].text, (SCREEN_W - textSize) / 2, SCREEN_H / 2 + j * LINE_SPACING, FONT_SIZE_MEDIUM, WHITE);
+    }
 }
 
 void DrawInput(char text[], int fontSize, int letterCount, int frameCount) {

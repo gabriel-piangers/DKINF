@@ -79,15 +79,6 @@ void DrawHUD(int level, float timer) {
     DrawText(TextFormat("Time: %.2f", timer), 100, 20, 16, RED);
 }
 
-void DrawMenu() {
-    BeginDrawing();
-    
-    DrawText("1. Novo Jogo", SCREEN_W / 2, SCREEN_H / 2, 20, WHITE);
-    DrawText("2. Ranking", SCREEN_W / 2, SCREEN_H / 2 + LINE_SPACING, 20, WHITE);
-    DrawText("3. Sair", SCREEN_W / 2, SCREEN_H / 2 + 2 * LINE_SPACING, 20, WHITE);
-
-}
-
 int main() {
     SetTargetFPS(FPS);
     InitWindow(SCREEN_W, SCREEN_H, "DKINF");
@@ -99,6 +90,17 @@ int main() {
     float timer = 0.0f;
     char playerName[MAX_PLAYER_NAME] = "";
     GameState currentGameState = GAME_MENU;
+
+    //Menu options
+    MenuOption mainMenuOptions[] = {
+        { "1. Novo Jogo" },
+        { "2. Ranking"   },
+        { "3. Sair"      }
+    };
+    MenuOption gameOverOptions[] = {
+        { "1. Reiniciar" },
+        { "2. Menu"      }
+    };
 
     InitializeEntities();
 
@@ -122,7 +124,7 @@ int main() {
                 ClearBackground(BLACK);
                 DrawTitle("DKINF");
                 
-                DrawMenu();
+                DrawMenu(mainMenuOptions, 3);
 
                 EndDrawing();
                 
@@ -172,7 +174,7 @@ int main() {
                 DrawTitle("GAME OVER");
                
 
-                DrawMenu();
+                DrawMenu(gameOverOptions, 2);
 
                 EndDrawing();
 

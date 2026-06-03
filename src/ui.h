@@ -17,7 +17,7 @@ typedef struct {
 } MenuOption;
 
 void DrawTitle(char title[]);
-void DrawMenu(MenuOption options[]);
+void DrawMenu(MenuOption options[], int count);
 void DrawInput(char text[], int fontSize, int letterCount, int frameCount);
 
 #endif
