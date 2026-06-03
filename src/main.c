@@ -79,6 +79,15 @@ void DrawHUD(int level, float timer) {
     DrawText(TextFormat("Time: %.2f", timer), 100, 20, 16, RED);
 }
 
+void DrawMenu() {
+    BeginDrawing();
+    
+    DrawText("1. Novo Jogo", SCREEN_W / 2, SCREEN_H / 2, 20, WHITE);
+    DrawText("2. Ranking", SCREEN_W / 2, SCREEN_H / 2 + LINE_SPACING, 20, WHITE);
+    DrawText("3. Sair", SCREEN_W / 2, SCREEN_H / 2 + 2 * LINE_SPACING, 20, WHITE);
+
+}
+
 int main() {
     SetTargetFPS(FPS);
     InitWindow(SCREEN_W, SCREEN_H, "DKINF");
@@ -112,10 +121,8 @@ int main() {
                 BeginDrawing();
                 ClearBackground(BLACK);
                 DrawTitle("DKINF");
-
-                DrawText("1. Novo Jogo", SCREEN_W / 2, SCREEN_H / 2, 20, WHITE);
-                DrawText("2. Ranking", SCREEN_W / 2, SCREEN_H / 2 + LINE_SPACING, 20, WHITE);
-                DrawText("3. Sair", SCREEN_W / 2, SCREEN_H / 2 + 2 * LINE_SPACING, 20, WHITE);
+                
+                DrawMenu();
 
                 EndDrawing();
                 
@@ -161,10 +168,12 @@ int main() {
 
                 BeginDrawing();
                 ClearBackground(BLACK);
-                DrawTitle("GAME OVER");
 
-                DrawText("1. Reiniciar", SCREEN_W / 2, SCREEN_H / 2 + 2 *LINE_SPACING, 20, WHITE);
-                DrawText("2. Menu", SCREEN_W / 2, SCREEN_H / 2 + 3 * LINE_SPACING, 20, WHITE);
+                DrawTitle("GAME OVER");
+               
+
+                DrawMenu();
+
                 EndDrawing();
 
                 break;
