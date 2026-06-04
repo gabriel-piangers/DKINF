@@ -27,7 +27,9 @@ typedef enum {
     GAME_MENU,
     GAME_RANKING,
     GAME_OVER,
-    GAME_FINISHED
+    GAME_FINISHED,
+    GAME_RESTART, // Equivalente a GAME_LEVEL, porém com lógica de restart
+    GAME_QUIT // Fecha o jogo de maneira segura
 } GameState;
 
 typedef struct {

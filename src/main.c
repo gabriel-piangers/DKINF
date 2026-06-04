@@ -74,11 +74,6 @@ void InitializeEntities() {
     InitEnemies(enemyPositions);
 }
 
-void DrawHUD(int level, float timer) {
-    DrawText(TextFormat("Level: %d", level), 20, 20, 16, RED);
-    DrawText(TextFormat("Time: %.2f", timer), 100, 20, 16, RED);
-}
-
 int main() {
     SetTargetFPS(FPS);
     InitWindow(SCREEN_W, SCREEN_H, "DKINF");
@@ -91,17 +86,6 @@ int main() {
     char playerName[MAX_PLAYER_NAME] = "";
     GameState currentGameState = GAME_MENU;
 
-    //Menu options
-    MenuOption mainMenuOptions[] = {
-        { "1. Novo Jogo" },
-        { "2. Ranking"   },
-        { "3. Sair"      }
-    };
-    MenuOption gameOverOptions[] = {
-        { "1. Reiniciar" },
-        { "2. Menu"      }
-    };
-
     InitializeEntities();
 
     while(!WindowShouldClose()) {
@@ -109,28 +93,36 @@ int main() {
 
         switch (currentGameState) {
             case GAME_MENU: {
+                MenuOption options[3] = {
+                    { "Novo Jogo", GAME_RESTART},
+                    { "Ranking", GAME_RANKING},
+                    { "Sair", GAME_QUIT}
+                };
+
                 if (IsKeyPressed(KEY_1)) {
-                    InitializeEntities();
-                    currentGameState = GAME_LEVEL;
+                    currentGameState = options[0].state;
                 } else if (IsKeyPressed(KEY_2)) {
-                    currentGameState = GAME_RANKING;
+                    currentGameState = options[1].state;
                 } else if (IsKeyPressed(KEY_3)) {
-                    UnloadResources();
-                    CloseWindow();
-                    return 0; // Foi obrigado a usar, se não da problema 
+                    currentGameState = options[2].state;
                 }
 
                 BeginDrawing();
                 ClearBackground(BLACK);
                 DrawTitle("DKINF");
                 
-                DrawMenu(mainMenuOptions, 3);
+                DrawMenu(options, 3);
 
                 EndDrawing();
                 
                 break;
             }
-            case GAME_LEVEL: {
+            case GAME_RESTART: { // Não adicionar o break!
+                timer = 0.0;
+                currentLevel = 0;
+                InitializeEntities();
+                currentGameState = GAME_LEVEL;
+            } case GAME_LEVEL: {
                 // Update Logic
                 timer += GetFrameTime();
                 UpdatePlayer();
@@ -139,11 +131,11 @@ int main() {
                 if (CheckEnemyCollision(GetPlayerRect())) {
                     currentGameState = GAME_OVER;
                     //printf("GAME OVER! FINAL TIME: %.2f SECONDS\n", timer); //
-                }
-
-                if(PlayerReachedGoal()) {
+                } else if(PlayerReachedGoal()) {
                     printf("LEVEL %d FINISHED IN %.2f SECONDS\n", currentLevel, timer);
                     currentGameState = GAME_FINISHED;
+                } else if(IsKeyPressed(KEY_PAUSE)) {
+                    currentGameState = GAME_PAUSED;
                 }
                 
                 BeginDrawing();
@@ -159,13 +151,15 @@ int main() {
                 break;
             }
             case GAME_OVER: {
+                MenuOption options[2] = {
+                    { "Reiniciar", GAME_RESTART},
+                    { "Menu", GAME_MENU}
+                }; 
+
                 if (IsKeyPressed(KEY_1)) {
-                    InitializeEntities();
-                    timer = 0.0f;
-                    currentLevel = 0;
-                    currentGameState = GAME_LEVEL;
+                    currentGameState = options[0].state;
                 } else if (IsKeyPressed(KEY_2)) {
-                    currentGameState = GAME_MENU;
+                    currentGameState = options[1].state;
                 }
 
                 BeginDrawing();
@@ -174,7 +168,7 @@ int main() {
                 DrawTitle("GAME OVER");
                
 
-                DrawMenu(gameOverOptions, 2);
+                DrawMenu(options, 2);
 
                 EndDrawing();
 
@@ -212,18 +206,46 @@ int main() {
                 break;
             }
             case GAME_PAUSED: {
+                MenuOption options[2] = {{"Continuar", GAME_LEVEL}, {"Voltar ao menu", GAME_MENU}};
+                
+                if(IsKeyPressed(KEY_PAUSE)) {
+                    currentGameState = GAME_LEVEL;
+                } else if(IsKeyPressed(KEY_1)) {
+                    currentGameState = options[0].state;
+                } else if(IsKeyPressed(KEY_2)){
+                    currentGameState = options[1].state;
+                }
 
                 BeginDrawing();
                 ClearBackground(BLACK);
+
                 DrawTitle("GAME PAUSED");
+                DrawMenu(options, 2);
+                DrawHUD(currentLevel, timer);
+
                 EndDrawing();
+                break;
             }
             case GAME_RANKING: {
+                MenuOption options[1] = {{"Voltar ao menu", GAME_MENU}};
+
+                if (IsKeyPressed(KEY_1)) {
+                    currentGameState = options[0].state;
+                }
 
                 BeginDrawing();
                 ClearBackground(BLACK);
+
                 DrawTitle("RANKINGS");
+                DrawMenu(options, 1);
+
                 EndDrawing();
+                break;
+            }
+            case GAME_QUIT: {
+                UnloadResources();
+                CloseWindow();
+                return 0;
             }
         }
     }

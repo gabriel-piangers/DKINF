@@ -7,8 +7,6 @@ void DrawTitle(char title[]) {
 }
 
 void DrawMenu(MenuOption options[], int count) {
-    BeginDrawing();
-
     int longerStringPos = 0;
 
     for(int i = 0; i < count; i++) {
@@ -19,7 +17,7 @@ void DrawMenu(MenuOption options[], int count) {
 
     for (int j= 0; j < count; j++){
         int textSize = MeasureText(options[longerStringPos].text, FONT_SIZE_MEDIUM);
-        DrawText(options[j].text, (SCREEN_W - textSize) / 2, SCREEN_H / 2 + j * LINE_SPACING, FONT_SIZE_MEDIUM, WHITE);
+        DrawText(TextFormat("%d. %s", j+1, options[j].text), (SCREEN_W - textSize) / 2, SCREEN_H / 2 + j * LINE_SPACING, FONT_SIZE_MEDIUM, WHITE);
     }
 }
 
@@ -37,4 +35,9 @@ void DrawInput(char text[], int fontSize, int letterCount, int frameCount) {
             (SCREEN_H - inputHeight)/2 + padding + fontSize - 5,
             20, 5, RED
         );
+}
+
+void DrawHUD(int level, float timer) {
+    DrawText(TextFormat("Level: %d", level), 20, 20, 16, RED);
+    DrawText(TextFormat("Time: %.2f", timer), 100, 20, 16, RED);
 }
