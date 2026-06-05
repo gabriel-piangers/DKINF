@@ -37,6 +37,21 @@ void DrawInput(char text[], int fontSize, int letterCount, int frameCount) {
         );
 }
 
+void DrawRanking(RankScore ranking[]) {
+    int fontSize = FONT_SIZE_MEDIUM, letterSize = MeasureText("A", fontSize);
+    int posX = (SCREEN_W - letterSize*38)/2;
+    int posY = (SCREEN_H - fontSize*SCORE_AMOUNT)/2;
+    
+    for (int i=0; i<SCORE_AMOUNT; i++) {
+        int offsetY = (fontSize+5) * i;
+        DrawText(TextFormat("%d.", i+1), posX, posY + offsetY, fontSize, WHITE);
+        DrawText(ranking[i].name, posX + letterSize*4, posY + offsetY, fontSize, WHITE);
+        DrawText(TextFormat("%.2f", ranking[i].time), posX + letterSize*30, posY + offsetY, fontSize, WHITE);
+    }
+
+    DrawText("1. Voltar ao menu", posX, posY + (fontSize + 5) * (SCORE_AMOUNT+1), fontSize, WHITE);
+}
+
 void DrawHUD(int level, float timer) {
     DrawText(TextFormat("Level: %d", level), 20, 20, 16, RED);
     DrawText(TextFormat("Time: %.2f", timer), 100, 20, 16, RED);

@@ -10,6 +10,7 @@
 #include "enemies.h"
 #include "map.h"
 #include "ui.h"
+#include "io.h"
 
 // Define textures
 Texture2D FLOOR_TEXTURE;
@@ -22,6 +23,9 @@ Texture2D PLAYER_RUN_L_TEXTURE; // 1x4 sprite sheet
 Texture2D PLAYER_TRAIL_R_TEXTURE;
 Texture2D PLAYER_TRAIL_L_TEXTURE;
 Texture2D ENEMY_TEXTURE;
+
+//Global variables
+GameState currentGameState = GAME_MENU;
 
 // Game functions
 void LoadResources() {
@@ -74,17 +78,29 @@ void InitializeEntities() {
     InitEnemies(enemyPositions);
 }
 
+void UpdateMenu(MenuOption options[], int count) {
+    if (count < 1) return;
+    
+    if(IsKeyPressed(KEY_1)) {
+        currentGameState = options[0].state;
+    } else if(IsKeyPressed(KEY_2) && count >= 2) {
+        currentGameState = options[1].state;
+    } else if(IsKeyPressed(KEY_3) && count >= 3) {
+        currentGameState = options[2].state;
+    }
+}
+
 int main() {
     SetTargetFPS(FPS);
     InitWindow(SCREEN_W, SCREEN_H, "DKINF");
 
     LoadResources();
+    LoadRanking();
 
-    //Variables
+    //Local Variables
     int currentLevel = 0, letterCount = 0, frameCount = 0;
     float timer = 0.0f;
-    char playerName[MAX_PLAYER_NAME] = "";
-    GameState currentGameState = GAME_MENU;
+    RankScore playerScore = {"", timer};
 
     InitializeEntities();
 
@@ -99,13 +115,7 @@ int main() {
                     { "Sair", GAME_QUIT}
                 };
 
-                if (IsKeyPressed(KEY_1)) {
-                    currentGameState = options[0].state;
-                } else if (IsKeyPressed(KEY_2)) {
-                    currentGameState = options[1].state;
-                } else if (IsKeyPressed(KEY_3)) {
-                    currentGameState = options[2].state;
-                }
+                UpdateMenu(options, 3);
 
                 BeginDrawing();
                 ClearBackground(BLACK);
@@ -118,8 +128,9 @@ int main() {
                 break;
             }
             case GAME_RESTART: { // Não adicionar o break!
-                timer = 0.0;
-                currentLevel = 0;
+                timer = 0.0, currentLevel = 0;
+                letterCount = 0, frameCount = 0;
+                playerScore = (RankScore) {"", 0.0};
                 InitializeEntities();
                 currentGameState = GAME_LEVEL;
             } case GAME_LEVEL: {
@@ -152,15 +163,11 @@ int main() {
             }
             case GAME_OVER: {
                 MenuOption options[2] = {
-                    { "Reiniciar", GAME_RESTART},
-                    { "Menu", GAME_MENU}
+                    { "Novo Jogo", GAME_RESTART},
+                    { "voltar ao Menu", GAME_MENU}
                 }; 
 
-                if (IsKeyPressed(KEY_1)) {
-                    currentGameState = options[0].state;
-                } else if (IsKeyPressed(KEY_2)) {
-                    currentGameState = options[1].state;
-                }
+                UpdateMenu(options, 2);
 
                 BeginDrawing();
                 ClearBackground(BLACK);
@@ -175,69 +182,93 @@ int main() {
                 break;
             }
             case GAME_FINISHED: {
-                //User input
-                int key = GetKeyPressed();
-                if (key >= 32 && key <= 125 && letterCount < MAX_PLAYER_NAME) {
-                    playerName[letterCount] = (char) key;
-                    letterCount++;
-                }
-                if(IsKeyPressed(KEY_BACKSPACE) && letterCount > 0) {
-                    letterCount--;
-                    playerName[letterCount] = '\0';
-                }
-                if(IsKeyPressed(KEY_ENTER) && letterCount > 0) {
-                    RankScore newScore = {(char) {' '}, timer}; // não da pra passar a string diretamente :(
-                    strcpy(newScore.PlayerName, playerName);
+                MenuOption options[] = {
+                    {"Novo Jogo", GAME_RESTART},
+                    {"Ranking", GAME_RANKING},
+                    {"Voltar ao Menu", GAME_MENU}
+                };
 
-                    printf("Player: %s \nTime: %.2f \n", playerName, timer); //Salvar isso em ranking.bin
+                int placement = GetScoreIndex((RankScore) {"", timer});
+                bool showInput = false;
 
-                    currentGameState = GAME_RANKING;
+                if(placement > -1 && playerScore.time == 0.0) {
+                    showInput = true;
+
+                    // User input
+                    int key = GetKeyPressed();
+                    if (key >= 32 && key <= 125 && letterCount < MAX_PLAYER_NAME) {
+                        playerScore.name[letterCount] = (char) key;
+                        letterCount++;
+                    }
+                    if(IsKeyPressed(KEY_BACKSPACE) && letterCount > 0) {
+                        letterCount--;
+                        playerScore.name[letterCount] = '\0';
+                    }
+                    if(IsKeyPressed(KEY_ENTER) && letterCount > 0) {
+                        playerScore.time = timer;
+                        SaveScore(playerScore, placement);
+
+                        showInput = false;
+                        printf("Player: %s \nTime: %.2f \n", playerScore.name, timer);
+                    }
+                } else {
+                    UpdateMenu(options, 3);
                 }
 
                 BeginDrawing();
                 ClearBackground(BLACK);
 
                 DrawTitle("GAME FINISHED");
+                DrawHUD(currentLevel, timer);
 
-                DrawInput(playerName, FONT_SIZE_BIG, letterCount, frameCount);
+                if(showInput) {
+                    DrawInput(playerScore.name, FONT_SIZE_BIG, letterCount, frameCount);
+                } else {
+                    DrawMenu(options, 3);
+                }
 
                 EndDrawing();
                 
                 break;
             }
             case GAME_PAUSED: {
-                MenuOption options[2] = {{"Continuar", GAME_LEVEL}, {"Voltar ao menu", GAME_MENU}};
+                MenuOption options[3] = {
+                    {"Continuar", GAME_LEVEL},
+                    {"Reiniciar", GAME_RESTART},
+                    {"Voltar ao menu", GAME_MENU}
+                };
                 
                 if(IsKeyPressed(KEY_PAUSE)) {
                     currentGameState = GAME_LEVEL;
-                } else if(IsKeyPressed(KEY_1)) {
-                    currentGameState = options[0].state;
-                } else if(IsKeyPressed(KEY_2)){
-                    currentGameState = options[1].state;
+                } else {
+                    UpdateMenu(options, 3);
                 }
 
                 BeginDrawing();
                 ClearBackground(BLACK);
 
                 DrawTitle("GAME PAUSED");
-                DrawMenu(options, 2);
+                DrawMenu(options, 3);
                 DrawHUD(currentLevel, timer);
 
                 EndDrawing();
                 break;
             }
             case GAME_RANKING: {
-                MenuOption options[1] = {{"Voltar ao menu", GAME_MENU}};
+                MenuOption options[1] = {{"Voltar ao menu", GAME_MENU}};                
+                RankScore ranking[SCORE_AMOUNT];
 
-                if (IsKeyPressed(KEY_1)) {
-                    currentGameState = options[0].state;
+                for(int i=0; i<SCORE_AMOUNT; i++) {
+                    ranking[i] = GetScore(i);
                 }
+
+                UpdateMenu(options, 1);
 
                 BeginDrawing();
                 ClearBackground(BLACK);
 
-                DrawTitle("RANKINGS");
-                DrawMenu(options, 1);
+                DrawTitle("RANKINGS");                
+                DrawRanking(ranking);
 
                 EndDrawing();
                 break;

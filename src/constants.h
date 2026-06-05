@@ -32,9 +32,4 @@ typedef enum {
     GAME_QUIT // Fecha o jogo de maneira segura
 } GameState;
 
-typedef struct {
-    char PlayerName[MAX_PLAYER_NAME];
-    float time;
-} RankScore;
-
 #endif

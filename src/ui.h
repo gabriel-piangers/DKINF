@@ -3,6 +3,7 @@
 
 #include <raylib.h>
 #include "constants.h"
+#include "io.h"
 
 #define LINE_SPACING 30
 #define TITLE_FONT_SIZE 48
@@ -19,6 +20,7 @@ typedef struct {
 void DrawTitle(char title[]);
 void DrawMenu(MenuOption options[], int count);
 void DrawInput(char text[], int fontSize, int letterCount, int frameCount);
+void DrawRanking(RankScore ranking[]);
 void DrawHUD(int level, float timer);
 
 #endif
