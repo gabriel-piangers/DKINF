@@ -52,6 +52,7 @@ void UpdateEnemies() {
 
             if(enemies[i].position.y > SCREEN_H + BOULDER_SIZE) {
                 enemies[i].isAlive = false;
+                enemyAmount--;
             }
         }
         default:
