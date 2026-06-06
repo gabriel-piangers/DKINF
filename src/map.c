@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <raylib.h>
 #include "map.h"
 #include "constants.h"
@@ -6,51 +7,64 @@ extern Texture2D FLOOR_TEXTURE;
 extern Texture2D STAIR_TEXTURE;
 extern Texture2D CHEST_TEXTURE;
 
-char map[MAP_H][MAP_W] = {
-        "                                 ",
-        "      D        F        D        ",
-        "      HZZZZZZZZZZZZZZZZZH        ",
-        "      H                 H        ",
-        "   D  S                 SD       ",
-        "  ZHZZZZZZZZZZZZZZZZZZZZZHZ      ",
-        "   H                     H       ",
-        "   S     D         D     S       ",
-        " ZZZZZZZZHZZZZZZZZZHZZZZZZZZ     ",
-        "         H         H             ",
-        "  D      S         SE      D     ",
-        "ZZHZZZZZZZZ       ZZZZZZZZZH     ",
-        "  H                        H     ",
-        "  S    D           D       S     ",
-        " ZZZZZZHZZZZZZZZZZZHZZZZZZZZ     ",
-        "       H           H             ",
-        "       S     D     S E           ",
-        " ZZZZZZZZZZZZHZZZZZZZZZZZZ       ",
-        "             H                   ",
-        "      D      S      D            ",
-        "     ZHZZZZZZZZZZZZZH            ",
-        "      H             H            ",
-        "D    ES             S     D      ",
-        "HZZZZZZZZZZZZZZZZZZZZZZZZZH      ",
-        "H                         H      ",
-        "S    P                    S      ",
-        "ZZZZZZZZZZZZZZZZZZZZZZZZZZZ      "
-    };
+char map[MAP_H][MAP_W];
+
+// Centralizing game drawing constants
+int offsetX = (SCREEN_W - MAP_W * TILE_SIZE) / 2;
+int offsetY = (SCREEN_H - MAP_H * TILE_SIZE) / 2 + 50; //offsetY tem um valor extra para dar espaço para o cabecalho do jogo (timer, level, etc)
+
+void LoadMap(int level) {
+    int lin = 0, col = 0, c;
+
+    FILE *mapFile;
+    mapFile = fopen(TextFormat("maps/mapa%d.txt", level), "r");
+
+    for (int i = 0; i < MAP_H; i++) {
+        for (int j = 0; j < MAP_W; j++) {
+            map[i][j] = ' '; // limpa os lixos de memoria
+        }
+    }
+
+    if(!(mapFile == NULL)) {
+        while((c =  fgetc(mapFile)) != EOF){
+            switch (c){
+            case '\n':
+                lin++;
+                col = 0;
+                break;
+            case ' ':
+                map[lin][col] = ' ';
+                col++;
+                break;
+            default:
+                map[lin][col] = (char) c;
+                col++;
+                break;
+            }
+        }
+        
+    } else{
+        printf("Could not open map file\n");
+    }
+
+    fclose(mapFile);
+}
 
 void DrawMap() {
     for (int y = 0; y<MAP_H; y++) {
-        for (int x = 0; map[y][x] != '\0'; x++) {
+        for (int x = 0; x < MAP_W; x++) {
             switch (map[y][x]) {
             case 'Z': {
-                DrawTexture(FLOOR_TEXTURE, x * TILE_SIZE, y * TILE_SIZE, WHITE);
+                DrawTexture(FLOOR_TEXTURE, x * TILE_SIZE + offsetX, y * TILE_SIZE + offsetY, WHITE);
                 break;
             }
             case 'H':
             case 'S': {
-                DrawTexture(STAIR_TEXTURE, x * TILE_SIZE, y * TILE_SIZE, WHITE);
+                DrawTexture(STAIR_TEXTURE, x * TILE_SIZE + offsetX, y * TILE_SIZE + offsetY, WHITE);
                 break;
             }
             case 'F': {
-                DrawTexture(CHEST_TEXTURE, x * TILE_SIZE, y * TILE_SIZE, WHITE);
+                DrawTexture(CHEST_TEXTURE, x * TILE_SIZE + offsetX, y * TILE_SIZE + offsetY, WHITE);
                 break;
             }
             default: {
@@ -62,6 +76,7 @@ void DrawMap() {
 }
 
 char GetTileAt(int x, int y) {
+    if (x < 0 || x >= MAP_W || y < 0 || y >= MAP_H) return ' ';
     return map[y][x];
 }
 

@@ -96,6 +96,7 @@ int main() {
 
     LoadResources();
     LoadRanking();
+    LoadMap(0);
 
     //Local Variables
     int currentLevel = 0, letterCount = 0, frameCount = 0;
