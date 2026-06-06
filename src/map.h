@@ -10,11 +10,12 @@
 
 
 //Centralizing game drawing constants
-extern int offsetX, offsetY;
+extern int mapOffsetX, mapOffsetY;
 
 void LoadMap(int level);
-void DrawMap();
 char GetTileAt(int x, int y);
+char GetTileAtPos(float posX, float posY);
+void DrawMap();
 bool CheckCollisionWithTile(Rectangle rect, char tile);
 
 #endif

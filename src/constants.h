@@ -1,9 +1,17 @@
 #ifndef CONSTANTS_H
 #define CONSTANTS_H
 
+#include <raylib.h>
+#include <math.h>
+#include <time.h>
+#include <stdlib.h>
+#include <stdbool.h>
+#include <string.h>
+#include <stdio.h>
+
 #define FPS 60
-#define SCREEN_W 900
-#define SCREEN_H 675
+#define SCREEN_W 1600
+#define SCREEN_H 900
 #define GRAVITY 0.5 // deve ser maior que AIR_RESISTANCE
 #define AIR_RESISTANCE 0.25
 #define MAX_PLAYER_NAME 20

@@ -28,9 +28,9 @@ void InitPlayer(Vector2 pos) {
 
 bool isPlayerOnGround() {
     //tile imediatamente abaixo do canto superior esquerdo do sprite do jogador
-    char lUnderTile = GetTileAt(player.position.x/TILE_SIZE, (player.position.y/TILE_SIZE)+1);
+    char lUnderTile = GetTileAtPos(player.position.x, player.position.y + 1 * TILE_SIZE);
     //tile imediatamente abaixo do canto superior direito do sprite do jogador
-    char rUnderTile = GetTileAt((player.position.x + PLAYER_SIZE)/TILE_SIZE, (player.position.y/TILE_SIZE)+1);
+    char rUnderTile = GetTileAtPos((player.position.x + PLAYER_SIZE), player.position.y + 1 * TILE_SIZE);
     return
         player.state == PLAYER_CLIMBING || (
             player.velocity.y <= 1 && player.velocity.y >= -1 && (
@@ -78,13 +78,13 @@ void ApplyVelocity() {
 
         //Checa se o jogador está em cima do fim de uma escada (não pode cair)!
         if(player.state != PLAYER_CLIMBING) {
-            int pCoordX = (player.position.x + PLAYER_SIZE/2)/TILE_SIZE;
-            int pCoordY = (player.position.y + PLAYER_SIZE)/TILE_SIZE; //usa a parte de baixo do sprite do jogador ao invés do centro
+            int pCoordX = player.position.x + PLAYER_SIZE/2;
+            int pCoordY = player.position.y + PLAYER_SIZE; //usa a parte de baixo do sprite do jogador ao invés do centro
             for (int x=-1; x<=1; x++) { 
                 for (int y=-1; y<=1; y++) {
                     int tCoordX = pCoordX+x, tCoordY = pCoordY+y;
-                    if (GetTileAt(tCoordX, tCoordY-1) == 'D' && pCoordY < tCoordY) { //se o tile é o último H (fim da escada)
-                        Rectangle stairEndRect = {tCoordX * TILE_SIZE, tCoordY * TILE_SIZE, TILE_SIZE, TILE_SIZE};
+                    if (GetTileAtPos(tCoordX, tCoordY - 1 * TILE_SIZE) == 'D' && pCoordY < tCoordY) { //se o tile é o último H (fim da escada)
+                        Rectangle stairEndRect = {tCoordX, tCoordY, TILE_SIZE, TILE_SIZE};
                         if(CheckCollisionRecs(newPlayerRect, stairEndRect)) {
                             if(player.velocity.y >= 0) {
                                 newPos.y = player.position.y; //Não aplica velocidade vertical para baixo (gravidade)
@@ -119,10 +119,10 @@ void SetPlayerTexture() {
 }
 
 void UpdatePlayer() {
-    int pCoordX = (player.position.x + PLAYER_SIZE/2)/TILE_SIZE; // coordenada x do centro do sprite do jogador
-    int pCoordY = (player.position.y + PLAYER_SIZE/2)/TILE_SIZE; // coordenada y do centro do sprite do jogador
+    int pCoordX = (player.position.x + PLAYER_SIZE/2); // coordenada x do centro do sprite do jogador
+    int pCoordY = (player.position.y + PLAYER_SIZE/2); // coordenada y do centro do sprite do jogador
 
-    char playerTile = GetTileAt(pCoordX, pCoordY);
+    char playerTile = GetTileAtPos(pCoordX, pCoordY);
     bool playerOnGround = isPlayerOnGround();
 
     //Timer updates

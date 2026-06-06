@@ -1,10 +1,3 @@
-#include <raylib.h>
-#include <math.h>
-#include <time.h>
-#include <stdlib.h>
-#include <stdbool.h>
-#include <string.h>
-#include <stdio.h>
 #include "constants.h"
 #include "player.h"
 #include "enemies.h"
@@ -23,6 +16,7 @@ Texture2D PLAYER_RUN_L_TEXTURE; // 1x4 sprite sheet
 Texture2D PLAYER_TRAIL_R_TEXTURE;
 Texture2D PLAYER_TRAIL_L_TEXTURE;
 Texture2D ENEMY_TEXTURE;
+Texture2D BOULDER_TEXTURE;
 
 //Global variables
 GameState currentGameState = GAME_MENU;
@@ -39,6 +33,7 @@ void LoadResources() {
     PLAYER_TRAIL_R_TEXTURE = LoadTexture("assets/player_trail_r.png");
     PLAYER_TRAIL_L_TEXTURE = LoadTexture("assets/player_trail_l.png");
     ENEMY_TEXTURE = LoadTexture("assets/fire.png");
+    BOULDER_TEXTURE = LoadTexture("assets/boulder.png");
 }
 
 void UnloadResources() {
@@ -52,30 +47,31 @@ void UnloadResources() {
     UnloadTexture(PLAYER_TRAIL_R_TEXTURE);
     UnloadTexture(PLAYER_TRAIL_L_TEXTURE);
     UnloadTexture(ENEMY_TEXTURE);
+    UnloadTexture(BOULDER_TEXTURE);
 }
 
 void InitializeEntities() {
     int enemyIndex = 0;
-    Vector2 enemyPositions[ENEMY_AMOUNT];
+    Enemy newEnemies[MAX_ENEMY_AMOUNT];
     for (int y = 0; y<MAP_H; y++) {
         for (int x = 0; x<MAP_W; x++) {
             switch (GetTileAt(x, y)) {
             case 'P': {
                 int offset = TILE_SIZE - PLAYER_SIZE;
-                Vector2 pos = (Vector2) {x * TILE_SIZE + offset, y * TILE_SIZE + offset};
+                Vector2 pos = (Vector2) {mapOffsetX + x * TILE_SIZE + offset, mapOffsetY + y * TILE_SIZE + offset};
                 InitPlayer(pos);
                 break;
             }
             case 'E': {
-                int offset = TILE_SIZE - ENEMY_SIZE;
-                enemyPositions[enemyIndex] = (Vector2) {x * TILE_SIZE + offset, y * TILE_SIZE + offset};
+                int offset = TILE_SIZE - GHOST_SIZE;
+                newEnemies[enemyIndex] = (Enemy) {(Vector2){mapOffsetX + x * TILE_SIZE + offset, mapOffsetY + y * TILE_SIZE + offset}, GHOST_ENEMY, 1, 0, ENEMY_TEXTURE, true};
                 enemyIndex++;
                 break;
             }
             }
         }
     }
-    InitEnemies(enemyPositions);
+    InitEnemies(newEnemies, enemyIndex);
 }
 
 void UpdateMenu(MenuOption options[], int count) {
@@ -91,17 +87,20 @@ void UpdateMenu(MenuOption options[], int count) {
 }
 
 int main() {
+    //Local Variables
+    int currentLevel = -1, letterCount = 0, frameCount = 0;
+    float timer = 0.0f;
+    RankScore playerScore = {"", timer};
+
     SetTargetFPS(FPS);
     InitWindow(SCREEN_W, SCREEN_H, "DKINF");
 
+    //Seed baseada no tempo atual
+    srand(time(NULL)); 
+
     LoadResources();
     LoadRanking();
-    LoadMap(0);
-
-    //Local Variables
-    int currentLevel = 0, letterCount = 0, frameCount = 0;
-    float timer = 0.0f;
-    RankScore playerScore = {"", timer};
+    LoadMap(currentLevel);
 
     InitializeEntities();
 
@@ -137,6 +136,9 @@ int main() {
             } case GAME_LEVEL: {
                 // Update Logic
                 timer += GetFrameTime();
+
+                if(frameCount % (int)(BOULDER_SPAWN_TIME * FPS) == 0) SpawnBoulder();
+
                 UpdatePlayer();
                 UpdateEnemies();
             
@@ -156,7 +158,7 @@ int main() {
 
                 DrawEnemies();
                 DrawPlayer();
-
+                
                 DrawHUD(currentLevel, timer);
                 EndDrawing();
 

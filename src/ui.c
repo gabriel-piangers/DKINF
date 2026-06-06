@@ -53,6 +53,6 @@ void DrawRanking(RankScore ranking[]) {
 }
 
 void DrawHUD(int level, float timer) {
-    DrawText(TextFormat("Level: %d", level), 20, 20, 16, RED);
-    DrawText(TextFormat("Time: %.2f", timer), 100, 20, 16, RED);
+    DrawText(TextFormat("Level: %d", level), 20, 20, FONT_SIZE_SMALL, RED);
+    DrawText(TextFormat("Time: %.2f", timer), 100, 20, FONT_SIZE_SMALL, RED);
 }
