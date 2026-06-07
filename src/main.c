@@ -135,6 +135,7 @@ int main() {
                 timer = 0.0, currentLevel = 0;
                 letterCount = 0, frameCount = 0;
                 playerScore = (RankScore) {"", 0.0};
+                LoadMap(currentLevel);
                 InitializeEntities();
                 currentGameState = GAME_LEVEL;
             } case GAME_LEVEL: {
@@ -150,8 +151,15 @@ int main() {
                     currentGameState = GAME_OVER;
                     //printf("GAME OVER! FINAL TIME: %.2f SECONDS\n", timer); //
                 } else if(PlayerReachedGoal()) {
-                    printf("LEVEL %d FINISHED IN %.2f SECONDS\n", currentLevel, timer);
-                    currentGameState = GAME_FINISHED;
+                    //printf("LEVEL %d FINISHED IN %.2f SECONDS\n", currentLevel, timer);
+                    currentLevel++;
+                    if (currentLevel > TOTAL_LEVELS) {
+                        currentGameState = GAME_FINISHED;
+                    } else {
+                        LoadMap(currentLevel);
+                        InitializeEntities();
+                        currentGameState = GAME_LEVEL;
+                    }
                 } else if(IsKeyPressed(KEY_PAUSE)) {
                     currentGameState = GAME_PAUSED;
                 }

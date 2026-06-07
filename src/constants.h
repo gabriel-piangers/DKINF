@@ -15,6 +15,7 @@
 #define GRAVITY 0.5 // deve ser maior que AIR_RESISTANCE
 #define AIR_RESISTANCE 0.25
 #define MAX_PLAYER_NAME 20
+#define TOTAL_LEVELS 3
 
 // Key inputs
 #define KEY_1 KEY_ONE
