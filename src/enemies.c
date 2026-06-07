@@ -9,14 +9,18 @@ Enemy enemies[MAX_ENEMY_AMOUNT];
 int enemyAmount = 0;
 
 void InitEnemies(Enemy newEnemies[], int size) {
-    enemyAmount = size;
+    Enemy defaultEnemy = {(Vector2) {0.0, 0.0}, GHOST_ENEMY, 0, 0, ENEMY_TEXTURE, false};
     for (int i=0; i<size; i++) {
         enemies[i] = newEnemies[i];
     }
+    for (int i=size; i<MAX_ENEMY_AMOUNT; i++) {
+        enemies[i] = defaultEnemy;
+    }
+    enemyAmount = size;
 }
 
 void UpdateEnemies() {
-    for (int i = 0; i < enemyAmount; i++) {
+    for (int i = 0; i < MAX_ENEMY_AMOUNT; i++) {
         if (!enemies[i].isAlive) continue;
         
         switch (enemies[i].type) {
@@ -63,7 +67,9 @@ void UpdateEnemies() {
 }
 
 void DrawEnemies() {
-    for (int i=0; i<enemyAmount; i++) {
+    for (int i=0; i<MAX_ENEMY_AMOUNT; i++) {
+        if(!enemies[i].isAlive) continue;
+
         Enemy currentEnemy = enemies[i];
         Rectangle srcRec = {0.0, 0.0, currentEnemy.texture.width, currentEnemy.texture.height};
 
@@ -84,28 +90,29 @@ void DrawEnemies() {
     }
 }
 
-bool CheckEnemyCollision(Rectangle rectPlayer) {
-    for (int i=0; i<enemyAmount; i++) {
-        if (enemies[i].isAlive){
-            Rectangle rectEnemy = {enemies[i].position.x, enemies[i].position.y, GHOST_SIZE, GHOST_SIZE};
-            switch (enemies[i].type) {
-                case GHOST_ENEMY:
-                    rectEnemy.width = GHOST_SIZE; rectEnemy.height = GHOST_SIZE;
-                    break;
-                case BOULDER_ENEMY:
-                    rectEnemy = (Rectangle) {
-                        enemies[i].position.x - BOULDER_SIZE/2,
-                        enemies[i].position.y - BOULDER_SIZE/2,
-                        BOULDER_SIZE,
-                        BOULDER_SIZE,
-                    };
-                    break;
-            }
-            
-            if (CheckCollisionRecs(rectPlayer, rectEnemy)) {
-                return true;
-            }
+bool CheckEnemyCollision(Rectangle rectPlayer) { 
+    for (int i=0; i<MAX_ENEMY_AMOUNT; i++) {
+        if (!enemies[i].isAlive) continue;
+
+        Rectangle rectEnemy = {enemies[i].position.x, enemies[i].position.y, GHOST_SIZE, GHOST_SIZE};
+        switch (enemies[i].type) {
+            case GHOST_ENEMY:
+                rectEnemy.width = GHOST_SIZE; rectEnemy.height = GHOST_SIZE;
+                break;
+            case BOULDER_ENEMY:
+                rectEnemy = (Rectangle) {
+                    enemies[i].position.x - BOULDER_SIZE/2,
+                    enemies[i].position.y - BOULDER_SIZE/2,
+                    BOULDER_SIZE,
+                    BOULDER_SIZE,
+                };
+                break;
         }
+        
+        if (CheckCollisionRecs(rectPlayer, rectEnemy)) {
+            return true;
+        }
+        
     }
     
     return false;
@@ -114,17 +121,15 @@ bool CheckEnemyCollision(Rectangle rectPlayer) {
 void SpawnBoulder() {
     Vector2 pos = {mapOffsetX + BOULDER_SIZE + rand() % (MAP_W * TILE_SIZE - BOULDER_SIZE), 0};
     Enemy boulder = {pos, BOULDER_ENEMY, 0, 0, BOULDER_TEXTURE, true};
-    for (int i=0; i<enemyAmount; i++) {
+    
+    //Procura por inimigos mortos para fazer a troca no vetor
+    for (int i=0; i<MAX_ENEMY_AMOUNT; i++) {
         if(!enemies[i].isAlive) {
             enemies[i] = boulder;
             enemyAmount++;
             return;
         }
     }
-    if(enemyAmount < MAX_ENEMY_AMOUNT) {
-        enemies[enemyAmount] = boulder;
-        enemyAmount++;
-    } else {
-        printf("Error spawning boulder: Enemy amount reached the limit!\n");
-    }
+
+    printf("Error spawning boulder: Enemy amount reached the limit!\n");
 }

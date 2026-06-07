@@ -10,8 +10,8 @@
 #include <stdio.h>
 
 #define FPS 60
-#define SCREEN_W 1600
-#define SCREEN_H 900
+#define SCREEN_W 1920
+#define SCREEN_H 1080
 #define GRAVITY 0.5 // deve ser maior que AIR_RESISTANCE
 #define AIR_RESISTANCE 0.25
 #define MAX_PLAYER_NAME 20

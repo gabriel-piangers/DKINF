@@ -88,14 +88,15 @@ void UpdateMenu(MenuOption options[], int count) {
 
 int main() {
     //Local Variables
-    int currentLevel = -1, letterCount = 0, frameCount = 0;
+    int currentLevel = 0, letterCount = 0, frameCount = 0;
     float timer = 0.0f;
     RankScore playerScore = {"", timer};
 
     SetTargetFPS(FPS);
-    InitWindow(SCREEN_W, SCREEN_H, "DKINF");
+    InitWindow(GetMonitorWidth(0), GetMonitorHeight(0), "DKINF");
+    ToggleBorderlessWindowed();
 
-    //Seed baseada no tempo atual
+    //Seed baseada no tempo atual1
     srand(time(NULL)); 
 
     LoadResources();
@@ -105,8 +106,11 @@ int main() {
     InitializeEntities();
 
     while(!WindowShouldClose()) {
-        frameCount++;
+        if(!IsWindowFocused()) {
+            MinimizeWindow();
+        }
 
+        frameCount++;
         switch (currentGameState) {
             case GAME_MENU: {
                 MenuOption options[3] = {

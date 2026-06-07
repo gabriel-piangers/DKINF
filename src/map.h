@@ -1,11 +1,11 @@
-#ifndef MAP_H
-#define MAP_H
+#ifndef MAP_HEADER
+#define MAP_HEADER
 
 #include <raylib.h>
 #include "constants.h"
 
-#define MAP_W 35 //provisorio
-#define MAP_H 27 //provisorio
+#define MAP_W 30 //provisorio
+#define MAP_H 30 //provisorio
 #define TILE_SIZE 24
 
 
