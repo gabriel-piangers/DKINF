@@ -1,7 +1,7 @@
-    D      F               D     
+   WDWWW   F               D     
    ZHZZZZZZZZZZZZZZZZZZZZZZHZZ   
     H                      H     
-   DS E     D        D E   SD   
+   DS E     D    W   D E   SD   
   ZHZZZZZZZZHZZZZZZZZHZZZZZZHZ   
    H        H        H      H    
    S  E   D S        SD     S   
@@ -10,11 +10,11 @@
    D      S           S   D    
 ZZZHZZZZZZZZ         ZZZZZHZZZ  
    H                      H        
-   S  D    E    D    E    S      
+   S  D    E WW D    E    S      
   ZZZZHZZZZZZZZZHZZZZZZZZZZZ  
       H         H                
-   D  S   E     S           D    
+   D  S   E     S          WD    
   ZHZZZZZZZZZZZZZZZZZZZZZZZZHZ   
    H                        H   
-   S           P      E     S   
+  WSW          P      E     S   
  ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ

@@ -3,8 +3,9 @@
 
 #include <raylib.h>
 
-#define GHOST_SIZE 20
+#define GHOST_SIZE 24
 #define GHOST_SPEED 1
+#define FIRE_SIZE 20
 #define BOULDER_SIZE 28
 #define BOULDER_SPEED 4
 #define BOULDER_SPAWN_TIME 1.5 // seconds
@@ -12,7 +13,8 @@
 
 typedef enum {
     GHOST_ENEMY,
-    BOULDER_ENEMY
+    FIRE_ENEMY,
+    BOULDER_ENEMY,
 } EnemyType;
 
 typedef struct {

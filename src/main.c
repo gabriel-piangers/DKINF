@@ -15,7 +15,9 @@ Texture2D PLAYER_RUN_R_TEXTURE; // 1x4 sprite sheet
 Texture2D PLAYER_RUN_L_TEXTURE; // 1x4 sprite sheet
 Texture2D PLAYER_TRAIL_R_TEXTURE;
 Texture2D PLAYER_TRAIL_L_TEXTURE;
-Texture2D ENEMY_TEXTURE;
+Texture2D GHOST_R_TEXTURE;
+Texture2D GHOST_L_TEXTURE;
+Texture2D FIRE_TEXTURE;
 Texture2D BOULDER_TEXTURE;
 
 //Global variables
@@ -32,7 +34,9 @@ void LoadResources() {
     PLAYER_RUN_L_TEXTURE = LoadTexture("assets/player_run_l.png");
     PLAYER_TRAIL_R_TEXTURE = LoadTexture("assets/player_trail_r.png");
     PLAYER_TRAIL_L_TEXTURE = LoadTexture("assets/player_trail_l.png");
-    ENEMY_TEXTURE = LoadTexture("assets/fire.png");
+    GHOST_R_TEXTURE = LoadTexture("assets/ghost_r.png");
+    GHOST_L_TEXTURE = LoadTexture("assets/ghost_l.png");
+    FIRE_TEXTURE = LoadTexture("assets/fire.png");
     BOULDER_TEXTURE = LoadTexture("assets/boulder.png");
 }
 
@@ -46,7 +50,9 @@ void UnloadResources() {
     UnloadTexture(PLAYER_RUN_L_TEXTURE);
     UnloadTexture(PLAYER_TRAIL_R_TEXTURE);
     UnloadTexture(PLAYER_TRAIL_L_TEXTURE);
-    UnloadTexture(ENEMY_TEXTURE);
+    UnloadTexture(GHOST_R_TEXTURE);
+    UnloadTexture(GHOST_L_TEXTURE);
+    UnloadTexture(FIRE_TEXTURE);
     UnloadTexture(BOULDER_TEXTURE);
 }
 
@@ -64,7 +70,13 @@ void InitializeEntities() {
             }
             case 'E': {
                 int offset = TILE_SIZE - GHOST_SIZE;
-                newEnemies[enemyIndex] = (Enemy) {(Vector2){mapOffsetX + x * TILE_SIZE + offset, mapOffsetY + y * TILE_SIZE + offset}, GHOST_ENEMY, 1, 0, ENEMY_TEXTURE, true};
+                newEnemies[enemyIndex] = (Enemy) {(Vector2){mapOffsetX + x * TILE_SIZE + offset, mapOffsetY + y * TILE_SIZE + offset}, GHOST_ENEMY, 1, 0, GHOST_R_TEXTURE, true};
+                enemyIndex++;
+                break;
+            }
+            case 'W': {
+                int offset = TILE_SIZE - FIRE_SIZE;
+                newEnemies[enemyIndex] = (Enemy) {(Vector2){mapOffsetX + x * TILE_SIZE + offset, mapOffsetY + y * TILE_SIZE + offset}, FIRE_ENEMY, 1, 0, FIRE_TEXTURE, true};
                 enemyIndex++;
                 break;
             }

@@ -2,14 +2,15 @@
 #include "enemies.h"
 #include "map.h"
 
-extern Texture2D ENEMY_TEXTURE;
+extern Texture2D GHOST_R_TEXTURE;
+extern Texture2D GHOST_L_TEXTURE;
 extern Texture2D BOULDER_TEXTURE;
 
 Enemy enemies[MAX_ENEMY_AMOUNT];
 int enemyAmount = 0;
 
 void InitEnemies(Enemy newEnemies[], int size) {
-    Enemy defaultEnemy = {(Vector2) {0.0, 0.0}, GHOST_ENEMY, 0, 0, ENEMY_TEXTURE, false};
+    Enemy defaultEnemy = {(Vector2) {0.0, 0.0}, GHOST_ENEMY, 0, 0, GHOST_R_TEXTURE, false};
     for (int i=0; i<size; i++) {
         enemies[i] = newEnemies[i];
     }
@@ -45,6 +46,8 @@ void UpdateEnemies() {
 
             if (hitWall || falls) {
                 enemies[i].direction *= -1;
+                if(enemies[i].direction == 1) enemies[i].texture = GHOST_R_TEXTURE;
+                else enemies[i].texture = GHOST_L_TEXTURE;
             } else {
                 enemies[i].position = nextPosition;
             }
@@ -60,7 +63,7 @@ void UpdateEnemies() {
             }
         }
         default:
-            break;
+            continue;
         }
     }
     return;
@@ -86,6 +89,12 @@ void DrawEnemies() {
                 DrawTexturePro(currentEnemy.texture, srcRec, dstRec, origin, currentEnemy.rotation, BROWN);
                 break;
             }
+            case FIRE_ENEMY: {
+                Rectangle dstRec = {currentEnemy.position.x, currentEnemy.position.y, FIRE_SIZE, FIRE_SIZE};
+                Vector2 origin = {0.0, 0.0}; //Usa o canto superior esquerdo como origem
+                DrawTexturePro(currentEnemy.texture, srcRec, dstRec, origin, currentEnemy.rotation, WHITE);
+                break;
+            }
         }
     }
 }
@@ -106,6 +115,9 @@ bool CheckEnemyCollision(Rectangle rectPlayer) {
                     BOULDER_SIZE,
                     BOULDER_SIZE,
                 };
+                break;
+            case FIRE_ENEMY:
+                rectEnemy.width = FIRE_SIZE; rectEnemy.height = FIRE_SIZE;
                 break;
         }
         

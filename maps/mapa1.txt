@@ -1,4 +1,4 @@
-      D        F        D        
+      D      W F W      D        
       HZZZZZZZZZZZZZZZZZH        
       H                 H        
    D  S                 SD       
@@ -10,10 +10,10 @@
   D      S         SE      D     
 ZZHZZZZZZZZ       ZZZZZZZZZH     
   H                        H     
-  S    D           D       S     
+  S    D     WW    D       S     
  ZZZZZZHZZZZZZZZZZZHZZZZZZZZ     
        H           H             
-       S     D     S E           
+       SW    D     S E           
  ZZZZZZZZZZZZHZZZZZZZZZZZZ       
              H                   
       D      S      D            
