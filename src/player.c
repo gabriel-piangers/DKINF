@@ -38,6 +38,10 @@ bool isPlayerOnGround() {
             ));
 }
 
+bool IsPlayerOnScreen() {
+    return (player.position.x > 0 && player.position.y > 0 && player.position.x <= SCREEN_W && player.position.y <= SCREEN_H);
+}
+
 void ApplyVelocity() {
     //Gravity acceleration
     if(player.state != PLAYER_CLIMBING) player.velocity.y += GRAVITY;

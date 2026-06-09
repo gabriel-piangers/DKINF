@@ -36,5 +36,6 @@ void DrawPlayer();
 void UpdatePlayer();
 Rectangle GetPlayerRect();
 bool PlayerReachedGoal();
+bool IsPlayerOnScreen();
 
 #endif

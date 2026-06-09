@@ -159,7 +159,7 @@ int main() {
                 UpdatePlayer();
                 UpdateEnemies();
             
-                if (CheckEnemyCollision(GetPlayerRect())) {
+                if (CheckEnemyCollision(GetPlayerRect()) || !IsPlayerOnScreen()) {
                     currentGameState = GAME_OVER;
                     //printf("GAME OVER! FINAL TIME: %.2f SECONDS\n", timer); //
                 } else if(PlayerReachedGoal()) {
