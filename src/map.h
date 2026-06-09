@@ -16,6 +16,6 @@ void LoadMap(int level);
 char GetTileAt(int x, int y);
 char GetTileAtPos(float posX, float posY);
 void DrawMap();
-bool CheckCollisionWithTile(Rectangle rect, char tile);
+Rectangle CheckCollisionWithTile(Rectangle rect, char tile);
 
 #endif

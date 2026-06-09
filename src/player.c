@@ -62,8 +62,10 @@ void ApplyVelocity() {
     Vector2 newPos = {player.position.x + player.velocity.x, player.position.y + player.velocity.y};
     if(player.velocity.x != 0){
         Rectangle newPlayerRect = {newPos.x, player.position.y, PLAYER_SIZE, PLAYER_SIZE};
-        if (CheckCollisionWithTile(newPlayerRect, 'Z')) {
-            newPos.x = player.position.x; //não aplica a velocidade horizontal
+        Rectangle overlap = CheckCollisionWithTile(newPlayerRect, 'Z');
+        if (overlap.width > 0) {
+            if (player.velocity.x > 0) newPos.x -= overlap.width;
+            else newPos.x += overlap.width; 
             player.velocity.x = 0;
         }
     }
@@ -71,30 +73,24 @@ void ApplyVelocity() {
     //Aplica velocidade vertical
     if(player.velocity.y != 0) {
         Rectangle newPlayerRect = {player.position.x, newPos.y, PLAYER_SIZE, PLAYER_SIZE};
-        if (CheckCollisionWithTile(newPlayerRect, 'Z')) {
-            newPos.y = player.position.y; //não aplica a velocidade vertical
+        Rectangle overlap = CheckCollisionWithTile(newPlayerRect, 'Z');
+        if (overlap.height > 0) {
+            if(player.velocity.y > 0)newPos.y -= overlap.height;
+            else newPos.y += overlap.height;
             player.velocity.y = 0;
         }   
 
         //Checa se o jogador está em cima do fim de uma escada (não pode cair)!
         if(player.state != PLAYER_CLIMBING) {
-            int pCoordX = player.position.x + PLAYER_SIZE/2;
-            int pCoordY = player.position.y + PLAYER_SIZE; //usa a parte de baixo do sprite do jogador ao invés do centro
-            for (int x=-1; x<=1; x++) { 
-                for (int y=-1; y<=1; y++) {
-                    int tCoordX = pCoordX+x, tCoordY = pCoordY+y;
-                    if (GetTileAtPos(tCoordX, tCoordY - 1 * TILE_SIZE) == 'D' && pCoordY < tCoordY) { //se o tile é o último H (fim da escada)
-                        Rectangle stairEndRect = {tCoordX, tCoordY, TILE_SIZE, TILE_SIZE};
-                        if(CheckCollisionRecs(newPlayerRect, stairEndRect)) {
-                            if(player.velocity.y >= 0) {
-                                newPos.y = player.position.y; //Não aplica velocidade vertical para baixo (gravidade)
-                                player.velocity.y = 0;
-                            }
-                        } 
-                    }
+            int pCoordX = (player.position.x + PLAYER_SIZE/2 - mapOffsetX) / TILE_SIZE;
+            int pCoordY = (player.position.y + PLAYER_SIZE - mapOffsetY +1) / TILE_SIZE; //Um pixel a baixo do sprite do jogador
+            if (GetTileAt(pCoordX, pCoordY-1) == 'D' && player.velocity.y > 0) { //se o tile é o último H (fim da escada)
+                Rectangle tileRect = {mapOffsetX + pCoordX * TILE_SIZE, mapOffsetY + pCoordY * TILE_SIZE, TILE_SIZE, TILE_SIZE};
+                Rectangle overlap = GetCollisionRec(newPlayerRect, tileRect);
+                newPos.y -= overlap.height;
+                player.velocity.y = 0;
                 }
-            }
-        }
+            } 
     }
 
     player.position = newPos;
@@ -207,7 +203,8 @@ Rectangle GetPlayerRect() {
 }
 
 bool PlayerReachedGoal() {
-    return CheckCollisionWithTile(GetPlayerRect(), 'F');
+    Rectangle overlap = CheckCollisionWithTile(GetPlayerRect(), 'F');
+    return (overlap.width > 0 || overlap.height > 0);
 }
 
 void DrawPlayer() {
