@@ -16,10 +16,10 @@ void LoadRanking() {
         if(fread(rankingScores, sizeof(RankScore), SCORE_AMOUNT, f) != sizeof(RankScore) * SCORE_AMOUNT) {
             printf("Error reading scores from %s!\n", RANKING_FILE_PATH);
         }
+        fclose(f);
     } else {
         printf("Could not open ranking file at path: %s\n", RANKING_FILE_PATH);
     }
-    fclose(f);
 }
 
 void SaveRankings() {
@@ -29,10 +29,10 @@ void SaveRankings() {
         if(fwrite(rankingScores, sizeof(RankScore), SCORE_AMOUNT, f) != sizeof(RankScore)*SCORE_AMOUNT) {
             printf("Error writing scores in %s\n!", RANKING_FILE_PATH);
         }
+        fclose(f);
     } else {
         printf("Error saving rankings at path: %s\n!", RANKING_FILE_PATH);
     }
-    fclose(f);
 }
 
 void SaveScore(RankScore newScore, int index) {
