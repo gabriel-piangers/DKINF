@@ -1,8 +1,5 @@
-#include <raylib.h>
-#include <stdio.h>
-#include "player.h"
-#include "constants.h"
-#include "map.h"
+#include "headers/player.h"
+#include "headers/map.h"
 
 extern Texture2D PLAYER_JUMP_R_TEXTURE;
 extern Texture2D PLAYER_JUMP_L_TEXTURE;

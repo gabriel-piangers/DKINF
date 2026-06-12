@@ -1,8 +1,6 @@
-#ifndef IO_H
-#define IO_H
+#ifndef RANKING_H
+#define RANKING_H
 
-#include <raylib.h>
-#include <stdio.h>
 #include "constants.h"
 
 #define SCORE_AMOUNT 10

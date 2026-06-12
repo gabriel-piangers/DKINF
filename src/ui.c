@@ -1,5 +1,4 @@
-#include "ui.h"
-#include <string.h>
+#include "headers/ui.h"
 
 void DrawTitle(char title[]) {
     int textSize = MeasureText(title, TITLE_FONT_SIZE);

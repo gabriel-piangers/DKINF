@@ -1,5 +1,4 @@
-#include "io.h"
-#include <math.h>
+#include "headers/ranking.h"
 
 RankScore defaultScore = {"No entry", INFINITY};
 RankScore rankingScores[SCORE_AMOUNT] = {0};

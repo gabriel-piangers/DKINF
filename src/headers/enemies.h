@@ -1,7 +1,7 @@
 #ifndef ENEMIES_H
 #define ENEMIES_H
 
-#include <raylib.h>
+#include "constants.h"
 
 #define GHOST_SIZE 24
 #define GHOST_SPEED 1

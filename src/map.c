@@ -1,7 +1,4 @@
-#include <stdio.h>
-#include <raylib.h>
-#include "map.h"
-#include "constants.h"
+#include "headers/map.h"
 
 extern Texture2D FLOOR_TEXTURE;
 extern Texture2D STAIR_TEXTURE;

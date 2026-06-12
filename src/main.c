@@ -1,9 +1,9 @@
-#include "constants.h"
-#include "player.h"
-#include "enemies.h"
-#include "map.h"
-#include "ui.h"
-#include "io.h"
+#include "headers/constants.h"
+#include "headers/player.h"
+#include "headers/enemies.h"
+#include "headers/map.h"
+#include "headers/ui.h"
+#include "headers/ranking.h"
 
 // Define textures
 Texture2D FLOOR_TEXTURE;
@@ -100,7 +100,7 @@ void UpdateMenu(MenuOption options[], int count) {
 
 int main() {
     //Local Variables
-    int currentLevel = 0, letterCount = 0, frameCount = 0;
+    int currentLevel = 1, letterCount = 0, frameCount = 0;
     float timer = 0.0f;
     RankScore playerScore = {"", timer};
 
@@ -144,7 +144,7 @@ int main() {
                 break;
             }
             case GAME_RESTART: { // Não adicionar o break!
-                timer = 0.0, currentLevel = 0;
+                timer = 0.0, currentLevel = 1;
                 letterCount = 0, frameCount = 0;
                 playerScore = (RankScore) {"", 0.0};
                 LoadMap(currentLevel);

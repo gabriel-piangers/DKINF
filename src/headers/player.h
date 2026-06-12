@@ -1,7 +1,7 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
-#include <raylib.h>
+#include "constants.h"
 
 #define PLAYER_SIZE 16 //Deve ser menor que TILE_SIZE
 #define PLAYER_SPEED 1.8

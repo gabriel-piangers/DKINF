@@ -1,6 +1,5 @@
-#include "constants.h"
-#include "enemies.h"
-#include "map.h"
+#include "headers/enemies.h"
+#include "headers/map.h"
 
 extern Texture2D GHOST_R_TEXTURE;
 extern Texture2D GHOST_L_TEXTURE;

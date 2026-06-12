@@ -1,7 +1,6 @@
 #ifndef MAP_HEADER
 #define MAP_HEADER
 
-#include <raylib.h>
 #include "constants.h"
 
 #define MAP_W 30 //provisorio

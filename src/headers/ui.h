@@ -1,9 +1,8 @@
 #ifndef UI_H
 #define UI_H
 
-#include <raylib.h>
 #include "constants.h"
-#include "io.h"
+#include "ranking.h"
 
 #define LINE_SPACING 30
 #define TITLE_FONT_SIZE 48
