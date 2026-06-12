@@ -1,10 +1,10 @@
- D     WFWD   E            E D   
- HZZZZZZZZHZZZZZZZZZZZZZZZZZZH  
- H        H                  H  
- S     E  SD    E   D        S 
-ZHZZZZZZZZZHZZZZZZZZHZZZZZZZZH  
- H         H        H        H  
- S    D    S  E  D  S   E    S 
+ D     WFW   E            E D   
+ HZZZZZZZZZZZZZZZZZZZZZZZZZZZH  
+ H                           H  
+ S     E   D    E   D        S 
+ZZZZZZZZZZZHZZZZZZZZHZZZZZZZZZ  
+           H        H           
+      D    S  E  D  S   E      
  ZZZZZHZZZZZZZZZZHZZZZZZZHZZZZZ 
       H          H       H       
  D  W S  E       S       S  E   
@@ -16,7 +16,7 @@ ZHZZZZZZZZZZZZZZZZZZZZZZZZZZZZ
      S  E D   S W D    S    E  
  ZZZZZZZZZHZZZZZZZHZZZZZZZZZZ  
           H       H              
-  D    E  S       S    E    D   
+  D    E  S   W   S    E    D   
  ZHZZZZZZZZZZZZZZZZZZZZZZZZZH  
   H                         H  
   S       E         P       S  

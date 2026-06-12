@@ -1,4 +1,4 @@
-   WDWWW   F               D     
+   WD WW   F               D     
    ZHZZZZZZZZZZZZZZZZZZZZZZHZZ   
     H                      H     
    DS E     D    W   D E   SD   
@@ -7,14 +7,14 @@
    S  E   D S        SD     S   
  ZZZZZZZZZHZZZZZZZZZZZHZZZZZZZ  
           H           H        
-   D      S           S   D    
+   D      S           S E D    
 ZZZHZZZZZZZZ         ZZZZZHZZZ  
    H                      H        
    S  D    E WW D    E    S      
-  ZZZZHZZZZZZZZZHZZZZZZZZZZZ  
+  ZZZZHZZZZZZZZZHZZZZZZZZZZZ 
       H         H                
-   D  S   E     S          WD    
+   D  S   E     S           D    
   ZHZZZZZZZZZZZZZZZZZZZZZZZZHZ   
    H                        H   
-  WSW          P      E     S   
+   SW          P      E     S   
  ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ
