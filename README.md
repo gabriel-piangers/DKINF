@@ -112,3 +112,6 @@ typedef struct {
 - Ao completar o nível, insira seu nome para gravar o tempo no ranking.
 - O ranking exibe os 10 melhores tempos em ordem crescente.
 
+## Créditos
+- [Dunjo Tileset](https://arks.itch.io/dungeon-platform-tileset), por [Arks](https://arks.itch.io/): principais sprites utilizados no projeto
+- [Raylib C++ VSCode template](https://github.com/educ8s/Raylib-CPP-Starter-Template-for-VSCODE), por [educ8s](https://github.com/educ8s): template utilizada como base para configurar o projeto no VSCode 
