@@ -82,10 +82,10 @@ typedef struct {
 - Funções principais:
   - `LoadResources()`, `UnloadResources()` em `src/main.c`.
   - `LoadMap(int level)`, `DrawMap()`, `CheckCollisionWithTile(Rectangle rect, char tile)` em `src/map.c`.
-  - `InitPlayer(Vector2 pos)`, `UpdatePlayer()`, `DrawPlayer()`, `GetPlayerRect()`, `PlayerReachedGoal()` em `src/player.c`.
-  - `InitEnemies(Enemy newEnemies[], int size)`, `UpdateEnemies()`, `DrawEnemies()`, `SpawnBoulder()` em `src/enemies.c`.
-  - `LoadRanking()`, `SaveScore(RankScore newScore, int index)`, `GetScoreIndex(RankScore score)` em `src/ranking.c`.
-  - `DrawTitle()`, `DrawMenu()`, `DrawInput()`, `DrawRanking()`, `DrawHUD()` em `src/ui.c`.
+  - `UpdatePlayer()`, `DrawPlayer()`, `GetPlayerRect()`, `PlayerReachedGoal()` em `src/player.c`.
+  - `UpdateEnemies()`, `DrawEnemies()`, `SpawnBoulder()` em `src/enemies.c`.
+  - `LoadRanking()`, `SaveScore(RankScore newScore, int index)` em `src/ranking.c`.
+  - `DrawMenu()`, `DrawInput()`, `DrawRanking()` em `src/ui.c`.
 
 ## Como usar
 ### Linux
@@ -106,7 +106,8 @@ typedef struct {
 3. Pressione F5 para compilar e executar.
 
 ## Jogabilidade
-- Controle o jogador com as teclas de movimento (W, A, S, D).
+- Controle o jogador com as teclas de movimento (`W`, `A`, `S`, `D`).
+- Pule com `SPACE` e utilize o dash com `SHIFT`
 - Alcance o objetivo `F` evitando inimigos e quedas.
 - Ao completar o nível, insira seu nome para gravar o tempo no ranking.
 - O ranking exibe os 10 melhores tempos em ordem crescente.
