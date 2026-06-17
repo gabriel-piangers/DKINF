@@ -164,13 +164,14 @@ int main() {
                     //printf("GAME OVER! FINAL TIME: %.2f SECONDS\n", timer); //
                 } else if(PlayerReachedGoal()) {
                     //printf("LEVEL %d FINISHED IN %.2f SECONDS\n", currentLevel, timer);
+
                     currentLevel++;
-                    if (currentLevel > TOTAL_LEVELS) {
-                        currentGameState = GAME_FINISHED;
-                    } else {
-                        LoadMap(currentLevel);
+                    if(LoadMap(currentLevel) == 1){ //a funcao retorna 1 se o mapa foi carregado com sucesso (o nivel existe)
                         InitializeEntities();
                         currentGameState = GAME_LEVEL;
+                    }else{
+                        currentLevel--; //decrementa para apresentacao do nivel correto na tela de fim de jogo
+                        currentGameState = GAME_FINISHED;
                     }
                 } else if(IsKeyPressed(KEY_PAUSE)) {
                     currentGameState = GAME_PAUSED;

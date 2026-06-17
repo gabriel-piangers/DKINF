@@ -10,7 +10,7 @@ char map[MAP_H][MAP_W];
 int mapOffsetX = (SCREEN_W - MAP_W * TILE_SIZE) / 2;
 int mapOffsetY = (SCREEN_H - MAP_H * TILE_SIZE) / 2 + 20; //mapOffsetY tem um valor extra para dar espaço para o cabecalho do jogo (timer, level, etc)
 
-void LoadMap(int level) {
+int LoadMap(int level) {
     int lin = 0, col = 0, c;
 
     FILE *mapFile;
@@ -40,11 +40,15 @@ void LoadMap(int level) {
             }
         }
         
+        fclose(mapFile);
+
+        return 1;
     } else{
         printf("Could not open map file\n");
+
+        return 0;
     }
 
-    fclose(mapFile);
 }
 
 char GetTileAt(int x, int y) {

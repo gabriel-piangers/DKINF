@@ -11,7 +11,7 @@
 //Centralizing game drawing constants
 extern int mapOffsetX, mapOffsetY;
 
-void LoadMap(int level);
+int LoadMap(int level);
 char GetTileAt(int x, int y);
 char GetTileAtPos(float posX, float posY);
 void DrawMap();
